@@ -1,11 +1,13 @@
+#pragma once
+
 #include <array>
 #include <cstdint>
-#include <iostream>
-#include <ostream>
 
 class chess_board {
   public:
     chess_board();
+
+    void print();
 
   private:
     void init_pawns();
@@ -21,22 +23,3 @@ class chess_board {
     // pawn on that square.
     std::array<uint64_t, 12> pieces;
 };
-
-chess_board::chess_board() : pieces() {
-    this->init_pawns();
-    this->init_rooks();
-    this->init_knights();
-    this->init_bishops();
-    this->init_kings();
-    this->init_queens();
-}
-
-void chess_board::init_pawns() {}
-
-int main(int argc, char **argv) {
-    std::cout << "Chaac" << std::endl;
-
-    chess_board board;
-
-    return 0;
-}
