@@ -74,17 +74,86 @@ bool chess_board::move_is_legal(uint64_t source, uint64_t dest, piece_type piece
     return false;
 }
 
-bool chess_board::move_is_legal_for_pawn(uint64_t source, uint64_t dest) const { return true; }
+bool chess_board::move_is_legal_for_pawn(uint64_t source, uint64_t dest) const {
+    // Pawns can move 1 square forward if there is no piece there
 
-bool chess_board::move_is_legal_for_rook(uint64_t source, uint64_t dest) const { return true; }
+    // Pawns can move 2 squares forward if there is no pieces in its path
 
-bool chess_board::move_is_legal_for_knight(uint64_t source, uint64_t dest) const { return true; }
+    // Pawns can capture 1 square diagonally if the opponent has a piece there
 
-bool chess_board::move_is_legal_for_bishop(uint64_t source, uint64_t dest) const { return true; }
+    // There is also en passant, but that is way too complicated. Could maybe implement in the
+    // future
 
-bool chess_board::move_is_legal_for_king(uint64_t source, uint64_t dest) const { return true; }
+    return true;
+}
 
-bool chess_board::move_is_legal_for_queen(uint64_t source, uint64_t dest) const { return true; }
+bool chess_board::move_is_legal_for_rook(uint64_t source, uint64_t dest) const {
+    // Rooks can move/capture as many squares as it wants vertically if there are no pieces in its
+    // path
+
+    // Rooks can move/capture as many squares as it wants horizontally if there are no pieces in its
+    // path
+
+    return true;
+}
+
+bool chess_board::move_is_legal_for_knight(uint64_t source, uint64_t dest) const {
+    // Knights can move/capture 2 squares forward and then 1 to the right
+
+    // Knights can move/capture 2 squares forward and then 1 to the left
+
+    // Knights can move/capture 2 squares to the right and then 1 forward
+
+    // Knights can move/capture 2 squares to the right and then 1 back
+
+    // Knights can move/capture 2 squares back and then 1 to the right
+
+    // Knights can move/capture 2 squares back and then 1 to the left
+
+    // Knights can move/capture 2 squares to the left and then 1 forward
+
+    // Knights can move/capture 2 squares to the left and then 1 back
+
+    return true;
+}
+
+bool chess_board::move_is_legal_for_bishop(uint64_t source, uint64_t dest) const {
+    // Bishops can move/capture as many squares as it wants diagonally from bottom+left to top+right
+    // if there are no pieces in its path (/)
+
+    // Bishops can move/capture as many squares as it wants diagonally from top+left to bottom+right
+    // if there are no pieces in its path (\)
+
+    return true;
+}
+
+bool chess_board::move_is_legal_for_king(uint64_t source, uint64_t dest) const {
+    // Kings can move/capture 1 square vertically
+
+    // Kings can move/capture 1 square horizontally
+
+    // Kings can move/capture 1 square diagonally from bottom+left to top+right (/)
+
+    // Kings can move/capture 1 square diagonally from top+left to bototm+right (\)
+
+    return true;
+}
+
+bool chess_board::move_is_legal_for_queen(uint64_t source, uint64_t dest) const {
+    // Queens can move/capture as many squares as it wants vertically if there are no pieces in its
+    // path
+
+    // Queens can move/capture as many squares as it wants diagonally from bottom+left to top+right
+    // if there are no pieces in its path (/)
+
+    // Queens can move/capture as many squares as it wants horizontally if there are no pieces in
+    // its path
+
+    // Queens can move/capture as many squares as it wants diagonally from top+left to bottom+right
+    // if there are no pieces in its path (\)
+
+    return true;
+}
 
 std::optional<piece_type> chess_board::find_piece(uint64_t square) const {
     for (int i = 0; i < 12; ++i)
