@@ -1,7 +1,10 @@
 #include "chess_board.h"
 
 #include <array>
+#include <cstdint>
+#include <cstdlib>
 #include <iostream>
+#include <optional>
 #include <ostream>
 
 chess_board::chess_board() : pieces() {
@@ -11,6 +14,49 @@ chess_board::chess_board() : pieces() {
     this->init_bishops();
     this->init_kings();
     this->init_queens();
+}
+
+void chess_board::move(uint64_t source, uint64_t dest, player_type player_type) {
+    auto piece = this->find_piece(source);
+    if (!piece.has_value()) {
+        std::cerr << "No piece at given square" << std::endl;
+        exit(1);
+    }
+
+    if (!this->piece_is_ours(piece.value(), player_type)) {
+        std::cerr << "Cannot move opponents piece" << std::endl;
+        exit(1);
+    }
+
+    if (this->move_is_legal(source, dest, piece.value())) {
+    } else {
+        std::cerr << "Illegal move" << std::endl;
+        exit(1);
+    }
+}
+
+bool chess_board::piece_is_ours(uint8_t piece, player_type player_type) {
+    switch (player_type) {
+    case player_type::WHITE:
+        return piece < 6;
+
+    case player_type::BLACK:
+        return piece >= 6;
+    }
+
+    return false;
+}
+
+bool chess_board::move_is_legal(uint64_t source, uint64_t dest, uint8_t piece) {
+    return true;
+}
+
+std::optional<uint8_t> chess_board::find_piece(uint64_t square) {
+    for (int i = 0; i < 12; ++i)
+        if (pieces[i] & square)
+            return i;
+
+    return std::nullopt;
 }
 
 void chess_board::print() {
