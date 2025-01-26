@@ -5,9 +5,24 @@
 #include <optional>
 #include <string_view>
 
-enum class player_type {
+enum class player_type : uint8_t {
     WHITE,
     BLACK,
+};
+
+enum class piece_type : uint8_t {
+    WHITE_PAWN,
+    WHITE_ROOK,
+    WHITE_KNIGHT,
+    WHITE_BISHOP,
+    WHITE_KING,
+    WHITE_QUEEN,
+    BLACK_PAWN,
+    BLACK_ROOK,
+    BLACK_KNIGHT,
+    BLACK_BISHOP,
+    BLACK_KING,
+    BLACK_QUEEN,
 };
 
 class chess_board {
@@ -26,13 +41,19 @@ class chess_board {
     void init_kings();
     void init_queens();
 
-    bool piece_is_ours(uint8_t piece, player_type player_type);
+    bool move_is_legal(uint64_t source, uint64_t dest, piece_type piece_type) const;
+    bool move_is_legal_for_pawn(uint64_t source, uint64_t dest) const;
+    bool move_is_legal_for_rook(uint64_t source, uint64_t dest) const;
+    bool move_is_legal_for_knight(uint64_t source, uint64_t dest) const;
+    bool move_is_legal_for_bishop(uint64_t source, uint64_t dest) const;
+    bool move_is_legal_for_king(uint64_t source, uint64_t dest) const;
+    bool move_is_legal_for_queen(uint64_t source, uint64_t dest) const;
 
-    bool move_is_legal(uint64_t source, uint64_t dest, uint8_t piece);
+    bool piece_is_ours(piece_type piece_type, player_type player_type) const;
 
-    std::optional<uint8_t> find_piece(uint64_t square);
+    std::optional<piece_type> find_piece(uint64_t square) const;
 
-    [[noreturn]] void fatal(const char* msg);
+    [[noreturn]] static void fatal(const char *msg);
 
     // pieces[0..6] are whites pieces represented as a bitboard. Each 64 bit integer represents an
     // 8x8 board where each bit represents a presence flag for whether or not the square is

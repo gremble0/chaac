@@ -25,31 +25,71 @@ void chess_board::move(uint64_t source, uint64_t dest, player_type player_type) 
         this->fatal("Cannot move opponents piece");
 
     if (this->move_is_legal(source, dest, piece.value())) {
-        this->pieces[piece.value()] ^= source; // Remove from source
-        this->pieces[piece.value()] |= dest;   // Add to destination
+        this->pieces[uint8_t(piece.value())] ^= source; // Remove from source
+        this->pieces[uint8_t(piece.value())] |= dest;   // Add to destination
     } else {
         this->fatal("Illegal move");
     }
 }
 
-bool chess_board::piece_is_ours(uint8_t piece, player_type player_type) {
+bool chess_board::piece_is_ours(piece_type piece_type, player_type player_type) const {
     switch (player_type) {
     case player_type::WHITE:
-        return piece < 6;
+        return uint8_t(piece_type) < 6;
 
     case player_type::BLACK:
-        return piece >= 6;
+        return uint8_t(piece_type) >= 6;
     }
 
     return false;
 }
 
-bool chess_board::move_is_legal(uint64_t source, uint64_t dest, uint8_t piece) { return true; }
+bool chess_board::move_is_legal(uint64_t source, uint64_t dest, piece_type piece_type) const {
+    switch (piece_type) {
+    case piece_type::WHITE_PAWN:
+    case piece_type::BLACK_PAWN:
+        return this->move_is_legal_for_pawn(source, dest);
 
-std::optional<uint8_t> chess_board::find_piece(uint64_t square) {
+    case piece_type::WHITE_ROOK:
+    case piece_type::BLACK_ROOK:
+        return this->move_is_legal_for_rook(source, dest);
+
+    case piece_type::WHITE_KNIGHT:
+    case piece_type::BLACK_KNIGHT:
+        return this->move_is_legal_for_knight(source, dest);
+
+    case piece_type::WHITE_BISHOP:
+    case piece_type::BLACK_BISHOP:
+        return this->move_is_legal_for_bishop(source, dest);
+
+    case piece_type::WHITE_KING:
+    case piece_type::BLACK_KING:
+        return this->move_is_legal_for_king(source, dest);
+
+    case piece_type::WHITE_QUEEN:
+    case piece_type::BLACK_QUEEN:
+        return this->move_is_legal_for_queen(source, dest);
+    }
+
+    return false;
+}
+
+bool chess_board::move_is_legal_for_pawn(uint64_t source, uint64_t dest) const { return true; }
+
+bool chess_board::move_is_legal_for_rook(uint64_t source, uint64_t dest) const { return true; }
+
+bool chess_board::move_is_legal_for_knight(uint64_t source, uint64_t dest) const { return true; }
+
+bool chess_board::move_is_legal_for_bishop(uint64_t source, uint64_t dest) const { return true; }
+
+bool chess_board::move_is_legal_for_king(uint64_t source, uint64_t dest) const { return true; }
+
+bool chess_board::move_is_legal_for_queen(uint64_t source, uint64_t dest) const { return true; }
+
+std::optional<piece_type> chess_board::find_piece(uint64_t square) const {
     for (int i = 0; i < 12; ++i)
         if (pieces[i] & square)
-            return i;
+            return piece_type(i);
 
     return std::nullopt;
 }
@@ -64,7 +104,7 @@ void chess_board::print() {
         for (int j = 0; j < 8; ++j) {
             auto piece = find_piece(UINT64_C(1) << (i * 8 + j));
             if (piece.has_value())
-                std::cout << pieces_strings[piece.value()] << ' ';
+                std::cout << pieces_strings[uint8_t(piece.value())] << ' ';
             else
                 std::cout << "  ";
         }
