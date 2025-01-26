@@ -22,4 +22,7 @@ class chess_board {
     // occupied. For example: pieces[0] are whites pawns where each bit tells us whether white has a
     // pawn on that square.
     std::array<uint64_t, 12> pieces;
+
+    static constexpr std::array<const char *, 12> pieces_strings = {"P", "R", "N", "B", "K", "Q",
+                                                                    "p", "r", "n", "b", "k", "q"};
 };
