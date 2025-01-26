@@ -18,20 +18,17 @@ chess_board::chess_board() : pieces() {
 
 void chess_board::move(uint64_t source, uint64_t dest, player_type player_type) {
     auto piece = this->find_piece(source);
-    if (!piece.has_value()) {
-        std::cerr << "No piece at given square" << std::endl;
-        exit(1);
-    }
+    if (!piece.has_value())
+        this->fatal("No piece at given square");
 
-    if (!this->piece_is_ours(piece.value(), player_type)) {
-        std::cerr << "Cannot move opponents piece" << std::endl;
-        exit(1);
-    }
+    if (!this->piece_is_ours(piece.value(), player_type))
+        this->fatal("Cannot move opponents piece");
 
     if (this->move_is_legal(source, dest, piece.value())) {
+        this->pieces[piece.value()] ^= source; // Remove from source
+        this->pieces[piece.value()] |= dest;   // Add to destination
     } else {
-        std::cerr << "Illegal move" << std::endl;
-        exit(1);
+        this->fatal("Illegal move");
     }
 }
 
@@ -47,9 +44,7 @@ bool chess_board::piece_is_ours(uint8_t piece, player_type player_type) {
     return false;
 }
 
-bool chess_board::move_is_legal(uint64_t source, uint64_t dest, uint8_t piece) {
-    return true;
-}
+bool chess_board::move_is_legal(uint64_t source, uint64_t dest, uint8_t piece) { return true; }
 
 std::optional<uint8_t> chess_board::find_piece(uint64_t square) {
     for (int i = 0; i < 12; ++i)
@@ -59,19 +54,23 @@ std::optional<uint8_t> chess_board::find_piece(uint64_t square) {
     return std::nullopt;
 }
 
+void chess_board::fatal(const char *msg) {
+    std::cerr << msg << std::endl;
+    exit(1);
+}
+
 void chess_board::print() {
     for (int i = 0; i < 8; ++i) {
         for (int j = 0; j < 8; ++j) {
-            for (int k = 0; k < 12; ++k) {
-                if (pieces[k] & UINT64_C(1) << (i * 8 + j)) {
-                    std::cout << pieces_strings[k] << ' ';
-                    break;
-                }
-            }
-            std::cout << ' ';
+            auto piece = find_piece(UINT64_C(1) << (i * 8 + j));
+            if (piece.has_value())
+                std::cout << pieces_strings[piece.value()] << ' ';
+            else
+                std::cout << "  ";
         }
         std::cout << '\n';
     }
+    std::cout << '\n';
 }
 
 void chess_board::init_pawns() {

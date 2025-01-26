@@ -32,6 +32,8 @@ class chess_board {
 
     std::optional<uint8_t> find_piece(uint64_t square);
 
+    [[noreturn]] void fatal(const char* msg);
+
     // pieces[0..6] are whites pieces represented as a bitboard. Each 64 bit integer represents an
     // 8x8 board where each bit represents a presence flag for whether or not the square is
     // occupied. For example: pieces[0] are whites pawns where each bit tells us whether white has a
