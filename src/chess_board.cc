@@ -4,8 +4,8 @@
 #include <array>
 #include <cstdint>
 #include <cstdlib>
-#include <iostream>
 #include <optional>
+#include <print>
 
 chess_board::chess_board() : pieces() {
     this->init_pawns();
@@ -25,8 +25,8 @@ void chess_board::move(uint64_t source, uint64_t dest, player_type player_type) 
         errors::fatal("Cannot move opponents piece at {}", dest);
 
     if (this->move_is_legal(source, dest, piece.value())) {
-        this->pieces[uint8_t(piece.value())] ^= source; // Remove from source
-        this->pieces[uint8_t(piece.value())] |= dest;   // Add to destination
+        this->pieces[static_cast<uint8_t>(piece.value())] ^= source; // Remove from source
+        this->pieces[static_cast<uint8_t>(piece.value())] |= dest;   // Add to destination
     } else {
         errors::fatal("Illegal move");
     }
@@ -35,10 +35,10 @@ void chess_board::move(uint64_t source, uint64_t dest, player_type player_type) 
 bool chess_board::piece_is_ours(piece_type piece_type, player_type player_type) const {
     switch (player_type) {
     case player_type::WHITE:
-        return uint8_t(piece_type) < 6;
+        return static_cast<uint8_t>(piece_type) < 6;
 
     case player_type::BLACK:
-        return uint8_t(piece_type) >= 6;
+        return static_cast<uint8_t>(piece_type) >= 6;
     }
 
     return false;
@@ -161,9 +161,11 @@ bool chess_board::move_is_legal_for_queen(uint64_t source, uint64_t dest) const 
 #pragma GCC diagnostic pop
 
 std::optional<piece_type> chess_board::find_piece(uint64_t square) const {
-    for (size_t i = 0; i < chess_board::NUM_PIECES; ++i)
-        if (this->pieces[i] & square)
+    for (size_t i = 0; i < chess_board::NUM_PIECES; ++i) {
+        if (this->pieces[i] & square) {
             return piece_type(i);
+        }
+    }
 
     return std::nullopt;
 }
@@ -171,67 +173,67 @@ std::optional<piece_type> chess_board::find_piece(uint64_t square) const {
 void chess_board::print() {
     for (size_t i = 0; i < 8; ++i) {
         for (size_t j = 0; j < 8; ++j) {
-            auto piece = find_piece(1 << (i * 8 + j));
+            auto piece = find_piece(1U << (i * 8 + j));
             if (piece.has_value())
-                std::cout << pieces_strings[uint8_t(piece.value())] << ' ';
+                std::print("{}", chess_board::pieces_strings[static_cast<uint8_t>(piece.value())]);
             else
-                std::cout << "  ";
+                std::print("  ");
         }
-        std::cout << '\n';
+        std::println();
     }
-    std::cout << '\n';
+    std::println();
 }
 
 void chess_board::init_pawns() {
     // Whites pawns
-    this->pieces[0] |= 0xffUL << (6 * 8);
+    this->pieces[0] |= 0xffUL << (6UL * 8);
 
     // Blacks pawns
-    this->pieces[6] |= 0xff << 8;
+    this->pieces[6] |= 0xffUL << 8UL;
 }
 
 void chess_board::init_rooks() {
     // Whites rooks
-    this->pieces[1] |= 1UL << (7 * 8);
-    this->pieces[1] |= 1UL << (7 * 8 + 7);
+    this->pieces[1] |= 1UL << (7U * 8);
+    this->pieces[1] |= 1UL << (7U * 8 + 7);
 
     // Blacks rooks
-    this->pieces[7] |= 1 << 7;
-    this->pieces[7] |= 1;
+    this->pieces[7] |= 1U << 7U;
+    this->pieces[7] |= 1U;
 }
 
 void chess_board::init_knights() {
     // Whites knights
-    this->pieces[2] |= 1UL << (7 * 8 + 6);
-    this->pieces[2] |= 1UL << (7 * 8 + 1);
+    this->pieces[2] |= 1UL << (7U * 8 + 6);
+    this->pieces[2] |= 1UL << (7U * 8 + 1);
 
     // Blacks knights
-    this->pieces[8] |= 1 << 6;
-    this->pieces[8] |= 1 << 1;
+    this->pieces[8] |= 1U << 6U;
+    this->pieces[8] |= 1U << 1U;
 }
 
 void chess_board::init_bishops() {
     // Whites bishops
-    this->pieces[3] |= 1UL << (7 * 8 + 5);
-    this->pieces[3] |= 1UL << (7 * 8 + 2);
+    this->pieces[3] |= 1UL << (7U * 8 + 5);
+    this->pieces[3] |= 1UL << (7U * 8 + 2);
 
     // Blacks bishops
-    this->pieces[9] |= 1 << 5;
-    this->pieces[9] |= 1 << 2;
+    this->pieces[9] |= 1U << 5U;
+    this->pieces[9] |= 1U << 2U;
 }
 
 void chess_board::init_kings() {
     // Whites king
-    this->pieces[4] |= 1UL << (7 * 8 + 3);
+    this->pieces[4] |= 1UL << (7U * 8 + 3);
 
     // Blacks king
-    this->pieces[10] |= 1 << 3;
+    this->pieces[10] |= 1U << 3U;
 }
 
 void chess_board::init_queens() {
     // Whites queen
-    this->pieces[5] |= 1UL << (7 * 8 + 4);
+    this->pieces[5] |= 1UL << (7U * 8 + 4);
 
     // Blacks queen
-    this->pieces[11] |= 1 << 4;
+    this->pieces[11] |= 1U << 4U;
 }
