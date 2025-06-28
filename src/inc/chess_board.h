@@ -1,9 +1,9 @@
 #pragma once
 
 #include <array>
+#include <cstddef>
 #include <cstdint>
 #include <optional>
-#include <string_view>
 
 enum class player_type : uint8_t {
     WHITE,
@@ -53,14 +53,14 @@ class chess_board {
 
     std::optional<piece_type> find_piece(uint64_t square) const;
 
-    [[noreturn]] static void fatal(const char *msg);
+    static constexpr std::size_t NUM_PIECES = 12;
 
     // pieces[0..6] are whites pieces represented as a bitboard. Each 64 bit integer represents an
     // 8x8 board where each bit represents a presence flag for whether or not the square is
     // occupied. For example: pieces[0] are whites pawns where each bit tells us whether white has a
     // pawn on that square.
-    std::array<uint64_t, 12> pieces;
+    std::array<uint64_t, NUM_PIECES> pieces;
 
-    static constexpr std::array<std::string_view, 12> pieces_strings = {
-        "P", "R", "N", "B", "K", "Q", "p", "r", "n", "b", "k", "q"};
+    static constexpr auto pieces_strings =
+        std::to_array({"P", "R", "N", "B", "K", "Q", "p", "r", "n", "b", "k", "q"});
 };

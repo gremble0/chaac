@@ -1,11 +1,11 @@
 #include "chess_board.h"
+#include "errors.h"
 
 #include <array>
 #include <cstdint>
 #include <cstdlib>
 #include <iostream>
 #include <optional>
-#include <ostream>
 
 chess_board::chess_board() : pieces() {
     this->init_pawns();
@@ -19,16 +19,16 @@ chess_board::chess_board() : pieces() {
 void chess_board::move(uint64_t source, uint64_t dest, player_type player_type) {
     auto piece = this->find_piece(source);
     if (!piece.has_value())
-        this->fatal("No piece at given square");
+        errors::fatal("No piece at given square");
 
     if (!this->piece_is_ours(piece.value(), player_type))
-        this->fatal("Cannot move opponents piece");
+        errors::fatal("Cannot move opponents piece");
 
     if (this->move_is_legal(source, dest, piece.value())) {
         this->pieces[uint8_t(piece.value())] ^= source; // Remove from source
         this->pieces[uint8_t(piece.value())] |= dest;   // Add to destination
     } else {
-        this->fatal("Illegal move");
+        errors::fatal("Illegal move");
     }
 }
 
@@ -156,16 +156,11 @@ bool chess_board::move_is_legal_for_queen(uint64_t source, uint64_t dest) const 
 }
 
 std::optional<piece_type> chess_board::find_piece(uint64_t square) const {
-    for (int i = 0; i < 12; ++i)
-        if (pieces[i] & square)
+    for (size_t i = 0; i < 12; ++i)
+        if (this->pieces[i] & square)
             return piece_type(i);
 
     return std::nullopt;
-}
-
-void chess_board::fatal(const char *msg) {
-    std::cerr << msg << std::endl;
-    exit(1);
 }
 
 void chess_board::print() {
