@@ -1,29 +1,11 @@
 #pragma once
 
+#include "types.h"
+
 #include <array>
 #include <cstddef>
 #include <cstdint>
 #include <optional>
-
-enum class player_type : uint8_t {
-    WHITE,
-    BLACK,
-};
-
-enum class piece_type : uint8_t {
-    WHITE_PAWN,
-    WHITE_ROOK,
-    WHITE_KNIGHT,
-    WHITE_BISHOP,
-    WHITE_KING,
-    WHITE_QUEEN,
-    BLACK_PAWN,
-    BLACK_ROOK,
-    BLACK_KNIGHT,
-    BLACK_BISHOP,
-    BLACK_KING,
-    BLACK_QUEEN,
-};
 
 class chess_board {
   public:
