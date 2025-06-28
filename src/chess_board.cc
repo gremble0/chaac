@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <optional>
 #include <print>
+#include <ranges>
 
 chess_board::chess_board() : pieces() {
     this->init_pawns();
@@ -161,8 +162,8 @@ bool chess_board::move_is_legal_for_queen(uint64_t source, uint64_t dest) const 
 #pragma GCC diagnostic pop
 
 std::optional<piece_type> chess_board::find_piece(uint64_t square) const {
-    for (size_t i = 0; i < chess_board::NUM_PIECES; ++i) {
-        if (this->pieces[i] & square) {
+    for (const auto &[i, piece] : std::views::enumerate(this->pieces)) {
+        if (piece & square) {
             return piece_type(i);
         }
     }
@@ -175,7 +176,7 @@ void chess_board::print() {
         for (size_t j = 0; j < 8; ++j) {
             auto piece = find_piece(1U << (i * 8 + j));
             if (piece.has_value())
-                std::print("{}", chess_board::pieces_strings[static_cast<uint8_t>(piece.value())]);
+                std::print("{} ", chess_board::pieces_strings[static_cast<uint8_t>(piece.value())]);
             else
                 std::print("  ");
         }
