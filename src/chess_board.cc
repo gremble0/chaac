@@ -2,11 +2,49 @@
 #include "errors.h"
 
 #include <array>
+#include <cassert>
 #include <cstdint>
 #include <cstdlib>
+#include <format>
 #include <optional>
 #include <print>
 #include <ranges>
+
+template <> struct std::formatter<piece_type> {
+    constexpr auto parse(std::format_parse_context &ctx) { return ctx.begin(); }
+
+    auto format(const piece_type &p, std::format_context &ctx) const {
+        switch (p) {
+        case piece_type::WHITE_PAWN:
+            return std::format_to(ctx.out(), "p");
+        case piece_type::WHITE_ROOK:
+            return std::format_to(ctx.out(), "r");
+        case piece_type::WHITE_KNIGHT:
+            return std::format_to(ctx.out(), "n");
+        case piece_type::WHITE_BISHOP:
+            return std::format_to(ctx.out(), "b");
+        case piece_type::WHITE_KING:
+            return std::format_to(ctx.out(), "k");
+        case piece_type::WHITE_QUEEN:
+            return std::format_to(ctx.out(), "q");
+
+        case piece_type::BLACK_PAWN:
+            return std::format_to(ctx.out(), "P");
+        case piece_type::BLACK_ROOK:
+            return std::format_to(ctx.out(), "R");
+        case piece_type::BLACK_KNIGHT:
+            return std::format_to(ctx.out(), "N");
+        case piece_type::BLACK_BISHOP:
+            return std::format_to(ctx.out(), "B");
+        case piece_type::BLACK_KING:
+            return std::format_to(ctx.out(), "K");
+        case piece_type::BLACK_QUEEN:
+            return std::format_to(ctx.out(), "Q");
+        }
+
+        return std::format_to(ctx.out(), "<unknown piece type>");
+    }
+};
 
 chess_board::chess_board() : pieces() {
     this->init_pawns();
@@ -26,10 +64,13 @@ void chess_board::move(uint64_t source, uint64_t dest, player_type player_type) 
         errors::fatal("Cannot move opponents piece at {}", dest);
 
     if (this->move_is_legal(source, dest, piece.value())) {
-        this->pieces[static_cast<uint8_t>(piece.value())] ^= source; // Remove from source
-        this->pieces[static_cast<uint8_t>(piece.value())] |= dest;   // Add to destination
+        auto piece_index = static_cast<uint8_t>(piece.value());
+        assert(piece_index <= NUM_PIECES);
+        auto &piece_bits = this->pieces.at(piece_index);
+        piece_bits ^= source; // Remove from source
+        piece_bits |= dest;   // Add to destination
     } else {
-        errors::fatal("Illegal move");
+        errors::fatal("Illegal move. Cannot move {}", piece.value());
     }
 }
 
@@ -172,11 +213,11 @@ std::optional<piece_type> chess_board::find_piece(uint64_t square) const {
 }
 
 void chess_board::print() {
-    for (size_t i = 0; i < 8; ++i) {
-        for (size_t j = 0; j < 8; ++j) {
+    for (size_t i = 0; i < NUM_ROWS; ++i) {
+        for (size_t j = 0; j < NUM_COLS; ++j) {
             auto piece = find_piece(1U << (i * 8 + j));
             if (piece.has_value())
-                std::print("{} ", chess_board::pieces_strings[static_cast<uint8_t>(piece.value())]);
+                std::print("{} ", piece.value());
             else
                 std::print("  ");
         }
