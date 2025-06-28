@@ -1,9 +1,16 @@
 #pragma once
 
-#include <string_view>
+#include <format>
+#include <print>
+#include <utility>
 
 namespace errors {
 
-[[noreturn]] void fatal(std::string_view msg);
-
+template <typename... Args>
+[[noreturn]] void fatal(std::format_string<Args...> msg, Args &&...args) {
+    std::println(stderr, "Encountered fatal error: {}",
+                 std::format(msg, std::forward<Args>(args)...));
+    std::exit(EXIT_FAILURE);
 }
+
+} // namespace errors

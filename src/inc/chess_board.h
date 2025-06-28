@@ -54,6 +54,8 @@ class chess_board {
     std::optional<piece_type> find_piece(uint64_t square) const;
 
     static constexpr std::size_t NUM_PIECES = 12;
+    static constexpr std::size_t NUM_ROWS = 8;
+    static constexpr std::size_t NUM_COLS = 8;
 
     // pieces[0..6] are whites pieces represented as a bitboard. Each 64 bit integer represents an
     // 8x8 board where each bit represents a presence flag for whether or not the square is

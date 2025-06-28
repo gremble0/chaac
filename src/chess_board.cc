@@ -22,7 +22,7 @@ void chess_board::move(uint64_t source, uint64_t dest, player_type player_type) 
         errors::fatal("No piece at given square");
 
     if (!this->piece_is_ours(piece.value(), player_type))
-        errors::fatal("Cannot move opponents piece");
+        errors::fatal("Cannot move opponents piece at {}", dest);
 
     if (this->move_is_legal(source, dest, piece.value())) {
         this->pieces[uint8_t(piece.value())] ^= source; // Remove from source
@@ -71,8 +71,11 @@ bool chess_board::move_is_legal(uint64_t source, uint64_t dest, piece_type piece
         return this->move_is_legal_for_queen(source, dest);
     }
 
-    return false;
+    errors::fatal("Tried to move unknown chess piece {}", static_cast<uint8_t>(piece_type));
 }
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 
 bool chess_board::move_is_legal_for_pawn(uint64_t source, uint64_t dest) const {
     // Pawns can move 1 square forward if there is no piece there
@@ -155,8 +158,10 @@ bool chess_board::move_is_legal_for_queen(uint64_t source, uint64_t dest) const 
     return true;
 }
 
+#pragma GCC diagnostic pop
+
 std::optional<piece_type> chess_board::find_piece(uint64_t square) const {
-    for (size_t i = 0; i < 12; ++i)
+    for (size_t i = 0; i < chess_board::NUM_PIECES; ++i)
         if (this->pieces[i] & square)
             return piece_type(i);
 
@@ -164,9 +169,9 @@ std::optional<piece_type> chess_board::find_piece(uint64_t square) const {
 }
 
 void chess_board::print() {
-    for (int i = 0; i < 8; ++i) {
-        for (int j = 0; j < 8; ++j) {
-            auto piece = find_piece(UINT64_C(1) << (i * 8 + j));
+    for (size_t i = 0; i < 8; ++i) {
+        for (size_t j = 0; j < 8; ++j) {
+            auto piece = find_piece(1 << (i * 8 + j));
             if (piece.has_value())
                 std::cout << pieces_strings[uint8_t(piece.value())] << ' ';
             else
@@ -179,7 +184,7 @@ void chess_board::print() {
 
 void chess_board::init_pawns() {
     // Whites pawns
-    this->pieces[0] |= UINT64_C(0xff) << (6 * 8);
+    this->pieces[0] |= 0xffUL << (6 * 8);
 
     // Blacks pawns
     this->pieces[6] |= 0xff << 8;
@@ -187,8 +192,8 @@ void chess_board::init_pawns() {
 
 void chess_board::init_rooks() {
     // Whites rooks
-    this->pieces[1] |= UINT64_C(1) << (7 * 8);
-    this->pieces[1] |= UINT64_C(1) << (7 * 8 + 7);
+    this->pieces[1] |= 1UL << (7 * 8);
+    this->pieces[1] |= 1UL << (7 * 8 + 7);
 
     // Blacks rooks
     this->pieces[7] |= 1 << 7;
@@ -197,8 +202,8 @@ void chess_board::init_rooks() {
 
 void chess_board::init_knights() {
     // Whites knights
-    this->pieces[2] |= UINT64_C(1) << (7 * 8 + 6);
-    this->pieces[2] |= UINT64_C(1) << (7 * 8 + 1);
+    this->pieces[2] |= 1UL << (7 * 8 + 6);
+    this->pieces[2] |= 1UL << (7 * 8 + 1);
 
     // Blacks knights
     this->pieces[8] |= 1 << 6;
@@ -207,8 +212,8 @@ void chess_board::init_knights() {
 
 void chess_board::init_bishops() {
     // Whites bishops
-    this->pieces[3] |= UINT64_C(1) << (7 * 8 + 5);
-    this->pieces[3] |= UINT64_C(1) << (7 * 8 + 2);
+    this->pieces[3] |= 1UL << (7 * 8 + 5);
+    this->pieces[3] |= 1UL << (7 * 8 + 2);
 
     // Blacks bishops
     this->pieces[9] |= 1 << 5;
@@ -217,7 +222,7 @@ void chess_board::init_bishops() {
 
 void chess_board::init_kings() {
     // Whites king
-    this->pieces[4] |= UINT64_C(1) << (7 * 8 + 3);
+    this->pieces[4] |= 1UL << (7 * 8 + 3);
 
     // Blacks king
     this->pieces[10] |= 1 << 3;
@@ -225,7 +230,7 @@ void chess_board::init_kings() {
 
 void chess_board::init_queens() {
     // Whites queen
-    this->pieces[5] |= UINT64_C(1) << (7 * 8 + 4);
+    this->pieces[5] |= 1UL << (7 * 8 + 4);
 
     // Blacks queen
     this->pieces[11] |= 1 << 4;
