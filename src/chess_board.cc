@@ -1,6 +1,6 @@
-#include "chess_board.h"
-#include "errors.h"
-#include "types.h"
+#include "chess_board.hh"
+#include "errors.hh"
+#include "types.hh"
 
 #include <array>
 #include <cassert>
