@@ -2,7 +2,7 @@
 
 #include <print>
 
-int main(int /*argc*/, char const *const * /*argv*/) {
+int main(int /*argc*/, const char *const * /*argv*/) {
     std::println("Chaac - a chess engine");
 
     chess_board board;

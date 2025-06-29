@@ -3,12 +3,14 @@
 #include <cstdint>
 #include <format>
 
-enum class player_type : uint8_t {
+namespace ch::types {
+
+enum class player_t : uint8_t {
     WHITE,
     BLACK,
 };
 
-enum class piece_type : uint8_t {
+enum class piece_t : uint8_t {
     WHITE_PAWN,
     WHITE_ROOK,
     WHITE_KNIGHT,
@@ -23,35 +25,37 @@ enum class piece_type : uint8_t {
     BLACK_QUEEN,
 };
 
-template <> struct std::formatter<piece_type> {
+} // namespace ch::types
+
+template <> struct std::formatter<ch::types::piece_t> {
     constexpr auto parse(std::format_parse_context &ctx) { return ctx.begin(); }
 
-    auto format(const piece_type &p, std::format_context &ctx) const {
+    auto format(const ch::types::piece_t &p, std::format_context &ctx) const {
         switch (p) {
-        case piece_type::WHITE_PAWN:
+        case ch::types::piece_t::WHITE_PAWN:
             return std::format_to(ctx.out(), "p");
-        case piece_type::WHITE_ROOK:
+        case ch::types::piece_t::WHITE_ROOK:
             return std::format_to(ctx.out(), "r");
-        case piece_type::WHITE_KNIGHT:
+        case ch::types::piece_t::WHITE_KNIGHT:
             return std::format_to(ctx.out(), "n");
-        case piece_type::WHITE_BISHOP:
+        case ch::types::piece_t::WHITE_BISHOP:
             return std::format_to(ctx.out(), "b");
-        case piece_type::WHITE_KING:
+        case ch::types::piece_t::WHITE_KING:
             return std::format_to(ctx.out(), "k");
-        case piece_type::WHITE_QUEEN:
+        case ch::types::piece_t::WHITE_QUEEN:
             return std::format_to(ctx.out(), "q");
 
-        case piece_type::BLACK_PAWN:
+        case ch::types::piece_t::BLACK_PAWN:
             return std::format_to(ctx.out(), "P");
-        case piece_type::BLACK_ROOK:
+        case ch::types::piece_t::BLACK_ROOK:
             return std::format_to(ctx.out(), "R");
-        case piece_type::BLACK_KNIGHT:
+        case ch::types::piece_t::BLACK_KNIGHT:
             return std::format_to(ctx.out(), "N");
-        case piece_type::BLACK_BISHOP:
+        case ch::types::piece_t::BLACK_BISHOP:
             return std::format_to(ctx.out(), "B");
-        case piece_type::BLACK_KING:
+        case ch::types::piece_t::BLACK_KING:
             return std::format_to(ctx.out(), "K");
-        case piece_type::BLACK_QUEEN:
+        case ch::types::piece_t::BLACK_QUEEN:
             return std::format_to(ctx.out(), "Q");
         }
 

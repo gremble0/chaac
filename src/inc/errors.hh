@@ -4,7 +4,7 @@
 #include <print>
 #include <utility>
 
-namespace errors {
+namespace ch::errors {
 
 template <typename... Args>
 [[noreturn]] void fatal(std::format_string<Args...> msg, Args &&...args) {
@@ -13,4 +13,4 @@ template <typename... Args>
     std::exit(EXIT_FAILURE);
 }
 
-} // namespace errors
+} // namespace ch::errors
