@@ -10,6 +10,7 @@
 #include <optional>
 #include <print>
 #include <ranges>
+#include <variant>
 
 namespace ch {
 
@@ -29,7 +30,7 @@ void chess_board::apply(const chess_move &move) {
     }
 
     if (!this->piece_is_ours(piece.value(), move.player)) {
-        errors::fatal("Cannot move opponents piece at");
+        errors::fatal("Cannot move opponents piece");
     }
 
     if (!this->move_is_legal(move)) {
@@ -85,23 +86,58 @@ bool chess_board::move_is_legal(const chess_move &move) const {
         return this->move_is_legal_for_queen(move);
     }
 
-    errors::fatal("Tried to move unknown chess piece {}", static_cast<uint8_t>(move.piece));
+    errors::fatal("Tried to move unknown chess piece {}", move);
 }
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 
 bool chess_board::move_is_legal_for_pawn(const chess_move &move) const {
-    // Pawns can move 1 square forward if there is no piece there
+    auto dest_is_occupied = this->find_piece(move.dest).has_value();
+    if (move.player == types::player_t::BLACK) {
+        assert(move.piece == types::piece_t::BLACK_PAWN);
 
-    // Pawns can move 2 squares forward if there is no pieces in its path
+        // Pawns can move 1 or 2 squares forward if there is no piece there
+        if ((move.dest == chess_board::move_vertical(move.source, -1) ||
+             move.dest == chess_board::move_vertical(move.source, -2)) &&
+            !dest_is_occupied) {
+            return true;
+        }
 
-    // Pawns can capture 1 square diagonally if the opponent has a piece there
+        // Pawns can capture 1 square diagonally if the opponent has a piece there
+        if ((move.dest == chess_board::move_diagonal(move.source, 1,
+                                                     types::diagonal_movement_t::DOWN_LEFT) ||
+             move.dest == chess_board::move_diagonal(move.source, 1,
+                                                     types::diagonal_movement_t::DOWN_RIGHT)) &&
+            dest_is_occupied) {
+            return true;
+        }
+    } else if (move.player == types::player_t::WHITE) {
+        assert(move.piece == types::piece_t::WHITE_PAWN);
+
+        // Pawns can move 1 or 2 squares forward if there is no piece there
+        if ((move.dest == chess_board::move_vertical(move.source, 1) ||
+             move.dest == chess_board::move_vertical(move.source, 2)) &&
+            !dest_is_occupied) {
+            return true;
+        }
+
+        // Pawns can capture 1 square diagonally if the opponent has a piece there
+        if ((move.dest ==
+                 chess_board::move_diagonal(move.source, 1, types::diagonal_movement_t::UP_LEFT) ||
+             move.dest == chess_board::move_diagonal(move.source, 1,
+                                                     types::diagonal_movement_t::UP_RIGHT)) &&
+            dest_is_occupied) {
+            return true;
+        }
+    } else {
+        assert(false);
+    }
 
     // There is also en passant, but that is way too complicated. Could maybe implement in the
     // future
 
-    return true;
+    return false;
 }
 
 bool chess_board::move_is_legal_for_rook(const chess_move &move) const {
