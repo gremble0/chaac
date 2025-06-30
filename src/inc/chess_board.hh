@@ -4,7 +4,6 @@
 #include "types.hh"
 
 #include <array>
-#include <cassert>
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
@@ -34,40 +33,6 @@ class chess_board {
     [[nodiscard]] bool move_is_legal_for_bishop(const chess_move &move) const;
     [[nodiscard]] bool move_is_legal_for_king(const chess_move &move) const;
     [[nodiscard]] bool move_is_legal_for_queen(const chess_move &move) const;
-
-    [[nodiscard]] static constexpr bool is_one_piece(uint64_t layer) {
-        return (layer & (layer - 1)) == 0;
-    }
-
-    [[nodiscard]] static constexpr uint64_t move_vertical(uint64_t source, int8_t n_ranks) {
-        assert(n_ranks != 0);
-        assert(chess_board::is_one_piece(source));
-
-        if (n_ranks < 0) {
-            return source << static_cast<uint8_t>(-n_ranks * 8);
-        } else {
-            return source >> static_cast<uint8_t>(n_ranks * 8);
-        }
-    }
-
-    [[nodiscard]] static constexpr uint64_t move_diagonal(uint64_t source, uint8_t n_steps,
-                                                          types::diagonal_movement_t direction) {
-        assert(n_steps != 0);
-        assert(chess_board::is_one_piece(source));
-
-        switch (direction) {
-        case types::diagonal_movement_t::UP_LEFT:
-            return source << (n_steps * 8U - n_steps);
-        case types::diagonal_movement_t::UP_RIGHT:
-            return source << (n_steps * 8U + n_steps);
-        case types::diagonal_movement_t::DOWN_LEFT:
-            return source >> (n_steps * 8U - n_steps);
-        case types::diagonal_movement_t::DOWN_RIGHT:
-            return source >> (n_steps * 8U + n_steps);
-        }
-
-        assert(false);
-    }
 
     [[nodiscard]] bool piece_is_ours(types::piece_t piece_type, types::player_t player_type) const;
 

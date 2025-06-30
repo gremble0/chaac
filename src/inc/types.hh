@@ -27,10 +27,6 @@ enum class piece_t : uint8_t {
 
 enum class diagonal_movement_t : uint8_t { UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT };
 
-// struct occupied {
-//     uint64_t position;
-// };
-
 } // namespace ch::types
 
 template <> struct std::formatter<ch::types::piece_t> {

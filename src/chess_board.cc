@@ -10,7 +10,6 @@
 #include <optional>
 #include <print>
 #include <ranges>
-#include <variant>
 
 namespace ch {
 
@@ -98,17 +97,17 @@ bool chess_board::move_is_legal_for_pawn(const chess_move &move) const {
         assert(move.piece == types::piece_t::BLACK_PAWN);
 
         // Pawns can move 1 or 2 squares forward if there is no piece there
-        if ((move.dest == chess_board::move_vertical(move.source, -1) ||
-             move.dest == chess_board::move_vertical(move.source, -2)) &&
+        if ((move.dest == chess_move::move_vertical(move.source, -1) ||
+             move.dest == chess_move::move_vertical(move.source, -2)) &&
             !dest_is_occupied) {
             return true;
         }
 
         // Pawns can capture 1 square diagonally if the opponent has a piece there
-        if ((move.dest == chess_board::move_diagonal(move.source, 1,
-                                                     types::diagonal_movement_t::DOWN_LEFT) ||
-             move.dest == chess_board::move_diagonal(move.source, 1,
-                                                     types::diagonal_movement_t::DOWN_RIGHT)) &&
+        if ((move.dest ==
+                 chess_move::move_diagonal(move.source, 1, types::diagonal_movement_t::DOWN_LEFT) ||
+             move.dest == chess_move::move_diagonal(move.source, 1,
+                                                    types::diagonal_movement_t::DOWN_RIGHT)) &&
             dest_is_occupied) {
             return true;
         }
@@ -116,17 +115,17 @@ bool chess_board::move_is_legal_for_pawn(const chess_move &move) const {
         assert(move.piece == types::piece_t::WHITE_PAWN);
 
         // Pawns can move 1 or 2 squares forward if there is no piece there
-        if ((move.dest == chess_board::move_vertical(move.source, 1) ||
-             move.dest == chess_board::move_vertical(move.source, 2)) &&
+        if ((move.dest == chess_move::move_vertical(move.source, 1) ||
+             move.dest == chess_move::move_vertical(move.source, 2)) &&
             !dest_is_occupied) {
             return true;
         }
 
         // Pawns can capture 1 square diagonally if the opponent has a piece there
         if ((move.dest ==
-                 chess_board::move_diagonal(move.source, 1, types::diagonal_movement_t::UP_LEFT) ||
-             move.dest == chess_board::move_diagonal(move.source, 1,
-                                                     types::diagonal_movement_t::UP_RIGHT)) &&
+                 chess_move::move_diagonal(move.source, 1, types::diagonal_movement_t::UP_LEFT) ||
+             move.dest ==
+                 chess_move::move_diagonal(move.source, 1, types::diagonal_movement_t::UP_RIGHT)) &&
             dest_is_occupied) {
             return true;
         }
