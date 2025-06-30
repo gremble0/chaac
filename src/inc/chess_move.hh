@@ -15,37 +15,35 @@ struct chess_move {
     types::player_t player;
 
     [[nodiscard]] static constexpr bool is_one_piece(uint64_t layer) {
+        // Check if only one bit is set in the input
         return (layer & (layer - 1)) == 0;
     }
 
-    [[nodiscard]] static constexpr uint64_t move_vertical(uint64_t source, int8_t n_ranks) {
-        assert(n_ranks != 0);
+    /**
+     * Move source by x steps along x axis and y steps along y axis.
+     * @param x positive number means move x steps to the right, negative means move x steps to the left
+     * @param y positive number means move y steps upward, negative means move y steps downward
+     */
+    [[nodiscard]] static constexpr uint64_t move(uint64_t source, int8_t x, int8_t y) {
+        // TODO(gremble): bounds checking?
+        assert(x != 0 && y != 0);
         assert(chess_move::is_one_piece(source));
 
-        if (n_ranks < 0) {
-            return source << static_cast<uint8_t>(-n_ranks * 8);
-        } else {
-            return source >> static_cast<uint8_t>(n_ranks * 8);
-        }
-    }
-
-    [[nodiscard]] static constexpr uint64_t move_diagonal(uint64_t source, uint8_t n_steps,
-                                                          types::diagonal_movement_t direction) {
-        assert(n_steps != 0);
-        assert(chess_move::is_one_piece(source));
-
-        switch (direction) {
-        case types::diagonal_movement_t::UP_LEFT:
-            return source << (n_steps * 8U - n_steps);
-        case types::diagonal_movement_t::UP_RIGHT:
-            return source << (n_steps * 8U + n_steps);
-        case types::diagonal_movement_t::DOWN_LEFT:
-            return source >> (n_steps * 8U - n_steps);
-        case types::diagonal_movement_t::DOWN_RIGHT:
-            return source >> (n_steps * 8U + n_steps);
+        // Handle any x axis movement (left to right)
+        if (x < 0) {
+            source = source >> static_cast<uint8_t>(-x);
+        } else if (x > 0) {
+            source = source << static_cast<uint8_t>(x);
         }
 
-        assert(false);
+        // Handle any y axis movement (bottom to top)
+        if (y < 0) {
+            source = source >> static_cast<uint8_t>(-y * 8);
+        } else if (y > 0) {
+            source = source << static_cast<uint8_t>(y * 8);
+        }
+
+        return source;
     }
 };
 
