@@ -10,3 +10,4 @@ set(CMAKE_BUILD_TYPE Debug)
 add_compile_options(-Wall -Wextra -Wpedantic -Werror)
 
 add_subdirectory(src)
+add_subdirectory(test)
