@@ -93,39 +93,33 @@ bool chess_board::move_is_legal(const chess_move &move) const {
 
 bool chess_board::move_is_legal_for_pawn(const chess_move &move) const {
     auto dest_is_occupied = this->find_piece(move.dest).has_value();
+
+    // Determine direction: white pawns move up (+1), black pawns move down (-1)
+    int8_t direction = (move.player == types::player_t::WHITE) ? 1 : -1;
+
     if (move.player == types::player_t::BLACK) {
         assert(move.piece == types::piece_t::BLACK_PAWN);
-
-        // Pawns can move 1 or 2 squares forward if there is no piece there
-        if ((move.dest == chess_move::move(move.source, 0, -1) || move.dest == chess_move::move(move.source, 0, -2)) &&
-            !dest_is_occupied) {
-            return true;
-        }
-
-        // Pawns can capture 1 square diagonally if the opponent has a piece there
-        if ((move.dest == chess_move::move(move.source, -1, -1) || move.dest == chess_move::move(move.source, 1, -1)) &&
-            dest_is_occupied) {
-            return true;
-        }
     } else if (move.player == types::player_t::WHITE) {
         assert(move.piece == types::piece_t::WHITE_PAWN);
-
-        // Pawns can move 1 or 2 squares forward if there is no piece there
-        if ((move.dest == chess_move::move(move.source, 0, 1) || move.dest == chess_move::move(move.source, 0, 2)) &&
-            !dest_is_occupied) {
-            return true;
-        }
-
-        // Pawns can capture 1 square diagonally if the opponent has a piece there
-        if ((move.dest == chess_move::move(move.source, -1, 1) || move.dest == chess_move::move(move.source, 1, 1)) &&
-            dest_is_occupied) {
-            return true;
-        }
     } else {
         assert(false);
     }
 
-    // There is also en passant, but that is way too complicated. Could maybe implement in the future
+    // Forward moves (1 or 2 squares)
+    if ((move.dest == chess_move::move(move.source, 0, direction) ||
+         move.dest == chess_move::move(move.source, 0, static_cast<int8_t>(direction * 2))) &&
+        !dest_is_occupied) {
+        return true;
+    }
+
+    // Diagonal captures
+    if ((move.dest == chess_move::move(move.source, -1, direction) ||
+         move.dest == chess_move::move(move.source, 1, direction)) &&
+        dest_is_occupied) {
+        return true;
+    }
+
+    // There is also en passant but this is way too complicated. Maybe in the future...
 
     return false;
 }
