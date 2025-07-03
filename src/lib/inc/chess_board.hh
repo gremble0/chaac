@@ -7,16 +7,18 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
+#include <format>
 #include <optional>
+#include <sstream>
 
 namespace ch {
 
 class chess_board {
   public:
+    friend class std::formatter<chess_board>;
     chess_board();
 
     void apply(const chess_move &move);
-    void print();
 
   private:
     void init_pawns();
@@ -50,3 +52,24 @@ class chess_board {
 };
 
 } // namespace ch
+
+template <> struct std::formatter<ch::chess_board> {
+    constexpr auto parse(std::format_parse_context &ctx) { return ctx.begin(); }
+
+    auto format(const ch::chess_board &p, std::format_context &ctx) const {
+        std::stringstream out;
+        for (size_t i = 0; i < ch::chess_board::NUM_ROWS; ++i) {
+            for (size_t j = 0; j < ch::chess_board::NUM_COLS; ++j) {
+                auto piece = p.find_piece(1UL << (i * 8 + j));
+                if (piece.has_value()) {
+                    out << std::format("{} ", piece.value());
+                } else {
+                    out << "  ";
+                }
+            }
+            out << '\n';
+        }
+
+        return std::format_to(ctx.out(), "{}", out.str());
+    }
+};

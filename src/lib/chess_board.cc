@@ -5,10 +5,8 @@
 #include <array>
 #include <cassert>
 #include <cstdint>
-#include <cstdlib>
 #include <format>
 #include <optional>
-#include <print>
 #include <ranges>
 
 namespace ch {
@@ -202,20 +200,6 @@ std::optional<types::piece_t> chess_board::find_piece(uint64_t square) const {
     }
 
     return std::nullopt;
-}
-
-void chess_board::print() {
-    for (size_t i = 0; i < NUM_ROWS; ++i) {
-        for (size_t j = 0; j < NUM_COLS; ++j) {
-            auto piece = find_piece(1UL << (i * 8 + j));
-            if (piece.has_value()) {
-                std::print("{} ", piece.value());
-            } else {
-                std::print("  ");
-            }
-        }
-        std::println();
-    }
 }
 
 void chess_board::init_pawns() {
