@@ -1,0 +1,22 @@
+#include <catch2/catch_test_macros.hpp>
+
+#include <chess_board.hh>
+#include <format>
+#include <string>
+#include <string_view>
+
+static constexpr std::string_view starting_presentation = R"(
+R N B K Q B N R
+P P P P P P P P
+
+
+
+
+p p p p p p p p
+r n b k q b n r)";
+
+TEST_CASE("Test default chess board setup") {
+    ch::chess_board board;
+    std::string board_presentation = std::format("{}", board);
+    REQUIRE(starting_presentation == board_presentation);
+}
