@@ -1,5 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 
+#include <chess_board.hh>
+
 TEST_CASE("Test moving chess pieces") {
     SECTION("Test moving pawns") {
         ch::chess_board board;
