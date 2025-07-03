@@ -13,7 +13,8 @@ P P P P P P P P
                
                
 p p p p p p p p
-r n b k q b n r)";
+r n b k q b n r
+)";
 
 TEST_CASE("Test default chess board setup") {
     ch::chess_board board;

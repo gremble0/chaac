@@ -67,14 +67,12 @@ template <> struct std::formatter<ch::chess_board> {
                     out << ' ';
                 }
 
+                // Don't print trailing whitespace
                 if (j != ch::chess_board::NUM_COLS - 1) {
                     out << ' ';
                 }
             }
-
-            if (i != ch::chess_board::NUM_ROWS - 1) {
-                out << '\n';
-            }
+            out << '\n';
         }
 
         return std::format_to(ctx.out(), "{}", out.str());
