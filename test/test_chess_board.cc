@@ -5,13 +5,13 @@
 #include <string>
 #include <string_view>
 
-static constexpr std::string_view starting_presentation = R"(
-R N B K Q B N R
+// NOTE: This string contains whitespaces for each empty line as well
+static constexpr std::string_view starting_presentation = R"(R N B K Q B N R
 P P P P P P P P
-
-
-
-
+               
+               
+               
+               
 p p p p p p p p
 r n b k q b n r)";
 

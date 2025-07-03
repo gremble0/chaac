@@ -62,12 +62,19 @@ template <> struct std::formatter<ch::chess_board> {
             for (size_t j = 0; j < ch::chess_board::NUM_COLS; ++j) {
                 auto piece = p.find_piece(1UL << (i * 8 + j));
                 if (std::holds_alternative<ch::types::piece_t>(piece)) {
-                    out << std::format("{} ", std::get<ch::types::piece_t>(piece));
+                    out << std::format("{}", std::get<ch::types::piece_t>(piece));
                 } else {
-                    out << "  ";
+                    out << ' ';
+                }
+
+                if (j != ch::chess_board::NUM_COLS - 1) {
+                    out << ' ';
                 }
             }
-            out << '\n';
+
+            if (i != ch::chess_board::NUM_ROWS - 1) {
+                out << '\n';
+            }
         }
 
         return std::format_to(ctx.out(), "{}", out.str());
