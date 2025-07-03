@@ -1,4 +1,4 @@
-#include "chess_board.hh"
+#include <chess_board.hh>
 
 #include <print>
 
