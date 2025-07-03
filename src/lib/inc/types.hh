@@ -25,6 +25,8 @@ enum class piece_t : uint8_t {
     BLACK_QUEEN,
 };
 
+enum class empty_t : uint8_t { EMPTY };
+
 enum class diagonal_movement_t : uint8_t { UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT };
 
 } // namespace ch::types

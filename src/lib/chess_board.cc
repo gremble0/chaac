@@ -6,8 +6,8 @@
 #include <cassert>
 #include <cstdint>
 #include <format>
-#include <optional>
 #include <ranges>
+#include <variant>
 
 namespace ch {
 
@@ -22,19 +22,21 @@ chess_board::chess_board() : pieces() {
 
 void chess_board::apply(const chess_move &move) {
     auto piece = this->find_piece(move.source);
-    if (!piece.has_value()) {
+    if (std::holds_alternative<types::empty_t>(piece)) {
         errors::fatal("No piece at given square");
     }
+    assert(std::holds_alternative<types::piece_t>(piece));
+    auto piece_value = std::get<types::piece_t>(piece);
 
-    if (!this->piece_is_ours(piece.value(), move.player)) {
+    if (!this->piece_is_ours(piece_value, move.player)) {
         errors::fatal("Cannot move opponents piece");
     }
 
     if (!this->move_is_legal(move)) {
-        errors::fatal("Illegal move. Cannot move {}", piece.value());
+        errors::fatal("Illegal move. Cannot move {}", piece_value);
     }
 
-    auto piece_index = static_cast<uint8_t>(piece.value());
+    auto piece_index = static_cast<uint8_t>(piece_value);
     assert(piece_index < NUM_PIECES);
     auto &piece_bits = this->pieces.at(piece_index);
     piece_bits ^= move.source; // Remove from source
@@ -90,7 +92,7 @@ bool chess_board::move_is_legal(const chess_move &move) const {
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 
 bool chess_board::move_is_legal_for_pawn(const chess_move &move) const {
-    auto dest_is_occupied = this->find_piece(move.dest).has_value();
+    auto dest_is_occupied = std::holds_alternative<types::piece_t>(this->find_piece(move.dest));
 
     // Determine direction: white pawns move up (+1), black pawns move down (-1)
     int8_t direction = (move.player == types::player_t::WHITE) ? 1 : -1;
@@ -192,14 +194,14 @@ bool chess_board::move_is_legal_for_queen(const chess_move &move) const {
 
 #pragma GCC diagnostic pop
 
-std::optional<types::piece_t> chess_board::find_piece(uint64_t square) const {
+std::variant<types::piece_t, types::empty_t> chess_board::find_piece(uint64_t square) const {
     for (const auto &[i, piece] : std::views::enumerate(this->pieces)) {
         if (piece & square) {
             return types::piece_t(i);
         }
     }
 
-    return std::nullopt;
+    return types::empty_t::EMPTY;
 }
 
 void chess_board::init_pawns() {

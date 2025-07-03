@@ -8,8 +8,8 @@
 #include <cstdint>
 #include <cstdlib>
 #include <format>
-#include <optional>
 #include <sstream>
+#include <variant>
 
 namespace ch {
 
@@ -38,7 +38,7 @@ class chess_board {
 
     [[nodiscard]] bool piece_is_ours(types::piece_t piece_type, types::player_t player_type) const;
 
-    [[nodiscard]] std::optional<types::piece_t> find_piece(uint64_t square) const;
+    [[nodiscard]] std::variant<types::piece_t, types::empty_t> find_piece(uint64_t square) const;
 
     static constexpr size_t NUM_PIECES = 12;
     static constexpr size_t NUM_ROWS = 8;
@@ -61,8 +61,8 @@ template <> struct std::formatter<ch::chess_board> {
         for (size_t i = 0; i < ch::chess_board::NUM_ROWS; ++i) {
             for (size_t j = 0; j < ch::chess_board::NUM_COLS; ++j) {
                 auto piece = p.find_piece(1UL << (i * 8 + j));
-                if (piece.has_value()) {
-                    out << std::format("{} ", piece.value());
+                if (std::holds_alternative<ch::types::piece_t>(piece)) {
+                    out << std::format("{} ", std::get<ch::types::piece_t>(piece));
                 } else {
                     out << "  ";
                 }
