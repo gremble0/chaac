@@ -6,6 +6,9 @@
 
 namespace ch::types {
 
+// a..h, 1..8 coordinate representing a human readable coordinate into an 8x8 chess board
+using square = std::pair<char, uint8_t>;
+
 enum class player_t : uint8_t {
     WHITE,
     BLACK,

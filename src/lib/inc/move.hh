@@ -1,5 +1,6 @@
 #pragma once
 
+#include "notation.hh"
 #include "types.hh"
 
 #include <cassert>
@@ -14,11 +15,6 @@ struct move {
     types::piece_t piece;
     types::player_t player;
 
-    [[nodiscard]] static constexpr bool is_one_piece(uint64_t board) {
-        // Check if only one bit is set in the input
-        return (board & (board - 1)) == 0;
-    }
-
     /**
      * Move source by x steps along x axis and y steps along y axis.
      * @param x positive number means move x steps to the right, negative means move x steps to the left
@@ -27,7 +23,7 @@ struct move {
     [[nodiscard]] static constexpr uint64_t get_dest(uint64_t source, int8_t x, int8_t y) {
         // TODO(gremble): bounds checking?
         assert(x != 0 && y != 0);
-        assert(move::is_one_piece(source));
+        assert(notation::is_one_piece(source));
         uint64_t dest = source;
 
         // Handle any x axis movement (left to right)

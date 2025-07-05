@@ -1,16 +1,17 @@
 #pragma once
 
-#include "move.hh"
-
+#include "types.hh"
 #include <cassert>
 #include <cstdint>
-#include <utility>
 
 namespace ch::notation {
 
-using square = std::pair<char, uint8_t>;
+[[nodiscard]] constexpr bool is_one_piece(uint64_t board) {
+    // Check if only one bit is set in the input
+    return (board & (board - 1)) == 0;
+}
 
-constexpr uint64_t from_square(square square) {
+[[nodiscard]] constexpr uint64_t from_square(types::square square) {
     const auto [file, rank] = square;
     assert(file >= 'a' && file <= 'h' && "File must be between 'a' and 'h'");
     assert(rank >= 1 && rank <= 8 && "Rank must be between 1 and 8");
@@ -22,8 +23,8 @@ constexpr uint64_t from_square(square square) {
     return 1UL << bit_position;
 }
 
-constexpr square to_square(uint64_t board) {
-    assert(ch::move::is_one_piece(board));
+[[nodiscard]] constexpr types::square to_square(uint64_t board) {
+    assert(is_one_piece(board));
 
     // Find the position of the single set bit
     // Manual bit scanning since __builtin_ctzll is not available
