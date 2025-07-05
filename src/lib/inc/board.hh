@@ -109,9 +109,10 @@ template <> struct std::formatter<ch::board> {
 
     auto format(const ch::board &p, std::format_context &ctx) const {
         std::stringstream out;
-        for (uint8_t rank = 0; rank < ch::board::NUM_ROWS; ++rank) {
-            for (uint8_t file = 0; file < ch::board::NUM_COLS; ++file) {
-                auto piece = p.find_piece(1UL << (rank * 8U + file));
+        // Need to traverse backwards so the last rank ends up at the top after formatting
+        for (uint8_t rank = ch::board::NUM_ROWS; rank > 0; --rank) {
+            for (uint8_t file = ch::board::NUM_COLS; file > 0; --file) {
+                auto piece = p.find_piece(1UL << ((rank - 1) * 8U + (file - 1)));
                 if (std::holds_alternative<ch::types::piece_t>(piece)) {
                     out << std::format("{}", std::get<ch::types::piece_t>(piece));
                 } else {
@@ -119,7 +120,7 @@ template <> struct std::formatter<ch::board> {
                 }
 
                 // Don't print trailing whitespace
-                if (file != ch::board::NUM_COLS - 1) {
+                if (file != 1) {
                     out << ' ';
                 }
             }
