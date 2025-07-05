@@ -11,9 +11,9 @@ static constexpr uint64_t from_notation(char file, uint8_t rank) {
 
     const uint8_t file_index = file - 'a';
     const uint8_t rank_index = rank - 1;
-    const uint8_t bit_position = 63 - (rank_index * 8 + file_index);
+    const uint8_t bit_position = rank_index * 8 + file_index;
 
-    return 1UL << bit_position;
+    return 1ULL << bit_position;
 }
 
 } // namespace ch::notation

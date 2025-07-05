@@ -95,10 +95,10 @@ class board {
     static constexpr size_t NUM_COLS = 8;
 
     // TODO(gremble0): make this an array of variants of piece_t or empty?
-    // pieces[0..6] are whites pieces represented as a bitboard. Each 64 bit integer represents an
-    // 8x8 board where each bit represents a presence flag for whether or not the square is
-    // occupied. For example: pieces[0] are whites pawns where each bit tells us whether white has a
-    // pawn on that square.
+    // pieces[0..6] are whites pieces represented as a bitboard, pieces[7..12] are blacks pieces. Each 64 bit integer
+    // represents an 8x8 board where each bit represents a presence flag for whether or not the square is occupied by a
+    // piece of that type. For example: pieces[0] are whites pawns where each bit tells us whether white has a pawn on
+    // that square. Each int is LSB-first meaning a1 is bit 0 and h8 is bit 63.
     std::array<uint64_t, NUM_PIECES> pieces;
 };
 
