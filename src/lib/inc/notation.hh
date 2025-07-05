@@ -1,26 +1,19 @@
 #pragma once
 
+#include <cassert>
 #include <cstdint>
 
 namespace ch::notation {
 
-template <char file, uint8_t rank> static constexpr uint64_t from_notation() {
-    static_assert(file >= 'a' && file <= 'h');
-    static_assert(rank >= 1 && rank <= 8);
+static constexpr uint64_t from_notation(char file, uint8_t rank) {
+    assert(file >= 'a' && file <= 'h' && "File must be between 'a' and 'h'");
+    assert(rank >= 1 && rank <= 8 && "Rank must be between 1 and 8");
 
-    // Convert file ('a' - 'h') to column (0 - 7)
-    constexpr uint8_t file_index = file - 'a';
+    const uint8_t file_index = file - 'a';
+    const uint8_t rank_index = rank - 1;
+    const uint8_t bit_position = 63 - (rank_index * 8 + file_index);
 
-    // Convert rank (1 - 8) to row (7-0)
-    // rank 1 is bottom row (row 7 in your representation)
-    // rank 8 is top row (row 0 in your representation)
-    constexpr uint8_t rank_index = 8 - rank;
-
-    // Calculate bit position
-    // Your layout: bit 63 is top-left, bit 0 is bottom-right
-    constexpr uint8_t bit_position = rank_index * 8 + file_index;
-
-    return 1ULL << bit_position;
+    return 1UL << bit_position;
 }
 
 } // namespace ch::notation
