@@ -10,7 +10,8 @@ int main(int /*argc*/, const char *const * /*argv*/) {
     // TODO(gremble0): loop should finish when one player wins
     while (true) {
         std::print("{}", board);
-        ch::input::read_move(board);
+        const auto move = ch::input::read_move(board);
+        board.apply(move);
     }
 
     return 0;

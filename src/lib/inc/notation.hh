@@ -13,6 +13,7 @@ namespace ch::notation {
 }
 
 [[nodiscard]] constexpr uint64_t from_square(types::square square) {
+    // TODO(gremble0) case insensitivity probably good here
     const auto [file, rank] = square;
     assert(file >= 'a' && file <= 'h' && "File must be between 'a' and 'h'");
     assert(rank >= 1 && rank <= 8 && "Rank must be between 1 and 8");

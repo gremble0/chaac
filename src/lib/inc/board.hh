@@ -108,10 +108,12 @@ template <> struct std::formatter<ch::board> {
 
     auto format(const ch::board &p, std::format_context &ctx) const {
         std::stringstream out;
-        // Need to traverse backwards so the last rank ends up at the top after formatting
+        // Traverse this backwards so we don't end up printing upside down
         for (uint8_t rank = ch::board::NUM_ROWS; rank > 0; --rank) {
-            for (uint8_t file = ch::board::NUM_COLS; file > 0; --file) {
-                auto piece = p.find_piece(1UL << ((rank - 1) * 8U + (file - 1)));
+            out << 0 + rank << " | ";
+            // Traverse this normal way so we don't end up printing files mirrored
+            for (uint8_t file = 0; file < ch::board::NUM_COLS; ++file) {
+                auto piece = p.find_piece(1UL << ((rank - 1) * 8U + file));
                 if (std::holds_alternative<ch::types::piece_t>(piece)) {
                     out << std::format("{}", std::get<ch::types::piece_t>(piece));
                 } else {
@@ -119,12 +121,14 @@ template <> struct std::formatter<ch::board> {
                 }
 
                 // Don't print trailing whitespace
-                if (file != 1) {
+                if (file != ch::board::NUM_COLS) {
                     out << ' ';
                 }
             }
             out << '\n';
         }
+        out << "  +----------------\n";
+        out << "    a b c d e f g h\n";
 
         return std::format_to(ctx.out(), "{}", out.str());
     }

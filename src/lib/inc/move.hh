@@ -22,7 +22,7 @@ struct move {
      */
     [[nodiscard]] static constexpr uint64_t get_dest(uint64_t source, int8_t x, int8_t y) {
         // TODO(gremble): bounds checking?
-        assert(x != 0 && y != 0);
+        assert(x != 0 || y != 0);
         assert(notation::is_one_piece(source));
         uint64_t dest = source;
 
