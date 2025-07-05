@@ -14,9 +14,9 @@ struct move {
     types::piece_t piece;
     types::player_t player;
 
-    [[nodiscard]] static constexpr bool is_one_piece(uint64_t layer) {
+    [[nodiscard]] static constexpr bool is_one_piece(uint64_t board) {
         // Check if only one bit is set in the input
-        return (layer & (layer - 1)) == 0;
+        return (board & (board - 1)) == 0;
     }
 
     /**

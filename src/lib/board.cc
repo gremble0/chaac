@@ -193,9 +193,9 @@ bool board::move_is_legal_for_queen(const move &move) const {
 
 #pragma GCC diagnostic pop
 
-std::variant<types::piece_t, types::empty_t> board::find_piece(uint64_t square) const {
+std::variant<types::piece_t, types::empty_t> board::find_piece(uint64_t board) const {
     for (const auto &[i, piece] : std::views::enumerate(this->pieces)) {
-        if (piece & square) {
+        if (piece & board) {
             return types::piece_t(i);
         }
     }

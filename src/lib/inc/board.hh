@@ -24,56 +24,56 @@ class board {
   private:
     constexpr void init_pawns() {
         // Whites pawns
-        this->pieces[0] |= notation::from_notation(2);
+        this->pieces[0] |= 0xFFUL << 8U;
 
         // Blacks pawns
-        this->pieces[6] |= notation::from_notation(7);
+        this->pieces[6] |= 0xFFUL << (6U * 8U);
     }
 
     constexpr void init_rooks() {
         // Whites rooks
-        this->pieces[1] |= notation::from_notation('a', 1);
-        this->pieces[1] |= notation::from_notation('h', 1);
+        this->pieces[1] |= notation::from_square({'a', 1});
+        this->pieces[1] |= notation::from_square({'h', 1});
 
         // Blacks rooks
-        this->pieces[7] |= notation::from_notation('a', 8);
-        this->pieces[7] |= notation::from_notation('h', 8);
+        this->pieces[7] |= notation::from_square({'a', 8});
+        this->pieces[7] |= notation::from_square({'h', 8});
     }
 
     constexpr void init_knights() {
         // Whites knights
-        this->pieces[2] |= notation::from_notation('b', 1);
-        this->pieces[2] |= notation::from_notation('g', 1);
+        this->pieces[2] |= notation::from_square({'b', 1});
+        this->pieces[2] |= notation::from_square({'g', 1});
 
         // Blacks knights
-        this->pieces[8] |= notation::from_notation('b', 8);
-        this->pieces[8] |= notation::from_notation('g', 8);
+        this->pieces[8] |= notation::from_square({'b', 8});
+        this->pieces[8] |= notation::from_square({'g', 8});
     }
 
     constexpr void init_bishops() {
         // Whites bishops
-        this->pieces[3] |= notation::from_notation('c', 1);
-        this->pieces[3] |= notation::from_notation('f', 1);
+        this->pieces[3] |= notation::from_square({'c', 1});
+        this->pieces[3] |= notation::from_square({'f', 1});
 
         // Blacks bishops
-        this->pieces[9] |= notation::from_notation('c', 8);
-        this->pieces[9] |= notation::from_notation('f', 8);
+        this->pieces[9] |= notation::from_square({'c', 8});
+        this->pieces[9] |= notation::from_square({'f', 8});
     }
 
     constexpr void init_kings() {
         // Whites king
-        this->pieces[4] |= notation::from_notation('e', 1);
+        this->pieces[4] |= notation::from_square({'e', 1});
 
         // Blacks king
-        this->pieces[10] |= notation::from_notation('e', 8);
+        this->pieces[10] |= notation::from_square({'e', 8});
     }
 
     constexpr void init_queens() {
         // Whites queen
-        this->pieces[5] |= notation::from_notation('d', 1);
+        this->pieces[5] |= notation::from_square({'d', 1});
 
         // Blacks queen
-        this->pieces[11] |= notation::from_notation('d', 8);
+        this->pieces[11] |= notation::from_square({'d', 8});
     }
 
     [[nodiscard]] bool move_is_legal(const move &move) const;
