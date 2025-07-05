@@ -61,8 +61,9 @@ bool board::piece_is_ours(types::piece_t piece_type, types::player_t player_type
 bool board::move_is_legal(const move &move) const {
     switch (move.piece) {
     case types::piece_t::WHITE_PAWN:
+        return this->move_is_legal_for_white_pawn(move);
     case types::piece_t::BLACK_PAWN:
-        return this->move_is_legal_for_pawn(move);
+        return this->move_is_legal_for_black_pawn(move);
 
     case types::piece_t::WHITE_ROOK:
     case types::piece_t::BLACK_ROOK:
@@ -91,23 +92,12 @@ bool board::move_is_legal(const move &move) const {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 
-bool board::move_is_legal_for_pawn(const move &move) const {
+bool board::move_is_legal_for_pawn(const move &move, int8_t direction) const {
     auto dest_is_occupied = std::holds_alternative<types::piece_t>(this->find_piece(move.dest));
-
-    // Determine direction: white pawns move up (+1), black pawns move down (-1)
-    int8_t direction = (move.player == types::player_t::WHITE) ? 1 : -1;
-
-    if (move.player == types::player_t::BLACK) {
-        assert(move.piece == types::piece_t::BLACK_PAWN);
-    } else if (move.player == types::player_t::WHITE) {
-        assert(move.piece == types::piece_t::WHITE_PAWN);
-    } else {
-        assert(false);
-    }
 
     // Forward moves (1 or 2 squares)
     if ((move.dest == move::get_dest(move.source, 0, direction) ||
-         move.dest == move::get_dest(move.source, 0, static_cast<int8_t>(direction * 2))) &&
+         move.dest == move::get_dest(move.source, 0, static_cast<int8_t>(2 * direction))) &&
         !dest_is_occupied) {
         return true;
     }
@@ -120,8 +110,17 @@ bool board::move_is_legal_for_pawn(const move &move) const {
     }
 
     // There is also en passant but this is way too complicated. Maybe in the future...
-
     return false;
+}
+
+bool board::move_is_legal_for_white_pawn(const move &move) const {
+    assert(move.piece == types::piece_t::WHITE_PAWN);
+    return this->move_is_legal_for_pawn(move, 1);
+}
+
+bool board::move_is_legal_for_black_pawn(const move &move) const {
+    assert(move.piece == types::piece_t::BLACK_PAWN);
+    return this->move_is_legal_for_pawn(move, -1);
 }
 
 bool board::move_is_legal_for_rook(const move &move) const {

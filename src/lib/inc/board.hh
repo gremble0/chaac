@@ -77,7 +77,9 @@ class board {
     }
 
     [[nodiscard]] bool move_is_legal(const move &move) const;
-    [[nodiscard]] bool move_is_legal_for_pawn(const move &move) const;
+    [[nodiscard]] bool move_is_legal_for_pawn(const move &move, int8_t direction) const;
+    [[nodiscard]] bool move_is_legal_for_white_pawn(const move &move) const;
+    [[nodiscard]] bool move_is_legal_for_black_pawn(const move &move) const;
     [[nodiscard]] bool move_is_legal_for_rook(const move &move) const;
     [[nodiscard]] bool move_is_legal_for_knight(const move &move) const;
     [[nodiscard]] bool move_is_legal_for_bishop(const move &move) const;
