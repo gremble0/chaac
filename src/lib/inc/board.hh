@@ -90,8 +90,8 @@ class board {
     [[nodiscard]] bool piece_is_ours(types::piece_t piece_type, types::player_t player_type) const;
 
     static constexpr size_t NUM_PIECES = 12;
-    static constexpr size_t NUM_ROWS = 8;
-    static constexpr size_t NUM_COLS = 8;
+    static constexpr size_t NUM_RANKS = 8;
+    static constexpr size_t NUM_FILES = 8;
 
     // TODO(gremble0): make this an array of variants of piece_t or empty?
     // pieces[0..6] are whites pieces represented as a bitboard, pieces[7..12] are blacks pieces. Each 64 bit integer
@@ -109,10 +109,10 @@ template <> struct std::formatter<ch::board> {
     auto format(const ch::board &p, std::format_context &ctx) const {
         std::stringstream out;
         // Traverse this backwards so we don't end up printing upside down
-        for (uint8_t rank = ch::board::NUM_ROWS; rank > 0; --rank) {
+        for (uint8_t rank = ch::board::NUM_RANKS; rank > 0; --rank) {
             out << 0 + rank << " | ";
             // Traverse this normal way so we don't end up printing files mirrored
-            for (uint8_t file = 0; file < ch::board::NUM_COLS; ++file) {
+            for (uint8_t file = 0; file < ch::board::NUM_FILES; ++file) {
                 auto piece = p.find_piece(1UL << ((rank - 1) * 8U + file));
                 if (std::holds_alternative<ch::types::piece_t>(piece)) {
                     out << std::format("{}", std::get<ch::types::piece_t>(piece));
@@ -121,7 +121,7 @@ template <> struct std::formatter<ch::board> {
                 }
 
                 // Don't print trailing whitespace
-                if (file != ch::board::NUM_COLS - 1) {
+                if (file != ch::board::NUM_FILES - 1) {
                     out << ' ';
                 }
             }

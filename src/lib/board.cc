@@ -55,10 +55,10 @@ bool board::piece_is_ours(types::piece_t piece_type, types::player_t player_type
 
     switch (player_type) {
     case types::player_t::WHITE:
-        return piece_type_i < 6;
+        return piece_type_i < NUM_PIECES / 2;
 
     case types::player_t::BLACK:
-        return piece_type_i >= 6;
+        return piece_type_i >= NUM_PIECES / 2;
     }
 
     return false;
