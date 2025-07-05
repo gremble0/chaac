@@ -92,6 +92,7 @@ class chess_board {
     static constexpr size_t NUM_ROWS = 8;
     static constexpr size_t NUM_COLS = 8;
 
+    // TODO(gremble0): make this an array of variants of piece_t or empty?
     // pieces[0..6] are whites pieces represented as a bitboard. Each 64 bit integer represents an
     // 8x8 board where each bit represents a presence flag for whether or not the square is
     // occupied. For example: pieces[0] are whites pawns where each bit tells us whether white has a
