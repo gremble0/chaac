@@ -27,21 +27,15 @@ namespace ch::notation {
     assert(is_one_piece(board));
 
     // Find the position of the single set bit
-    // Manual bit scanning since __builtin_ctzll is not available
     uint8_t bit_position = 0;
     uint64_t temp = board;
     while ((temp & 1UL) == 0) {
         temp >>= 1U;
-        bit_position++;
+        ++bit_position;
     }
 
-    // Extract file and rank from bit position
-    const uint8_t file_index = bit_position % 8;
-    const uint8_t rank_index = bit_position / 8;
-
-    // Convert back to chess notation
-    const char file = static_cast<char>(file_index + 'a');
-    const uint8_t rank = rank_index + 1;
+    const char file = static_cast<char>((bit_position % 8) + 'a');
+    const uint8_t rank = (bit_position / 8) + 1;
 
     return {file, rank};
 }
