@@ -21,12 +21,60 @@ class chess_board {
     void apply(const chess_move &move);
 
   private:
-    void init_pawns();
-    void init_rooks();
-    void init_knights();
-    void init_bishops();
-    void init_kings();
-    void init_queens();
+    constexpr void init_pawns() {
+        // Whites pawns
+        this->pieces[0] |= 0xffUL << (6U * 8);
+
+        // Blacks pawns
+        this->pieces[6] |= 0xffUL << 8U;
+    }
+
+    constexpr void init_rooks() {
+        // Whites rooks
+        this->pieces[1] |= 1UL << (7U * 8);
+        this->pieces[1] |= 1UL << (7U * 8 + 7);
+
+        // Blacks rooks
+        this->pieces[7] |= 1UL << 7U;
+        this->pieces[7] |= 1UL;
+    }
+
+    constexpr void init_knights() {
+        // Whites knights
+        this->pieces[2] |= 1UL << (7U * 8 + 6);
+        this->pieces[2] |= 1UL << (7U * 8 + 1);
+
+        // Blacks knights
+        this->pieces[8] |= 1UL << 6U;
+        this->pieces[8] |= 1UL << 1U;
+    }
+
+    constexpr void init_bishops() {
+
+        // Whites bishops
+        this->pieces[3] |= 1UL << (7U * 8 + 5);
+        this->pieces[3] |= 1UL << (7U * 8 + 2);
+
+        // Blacks bishops
+        this->pieces[9] |= 1UL << 5U;
+        this->pieces[9] |= 1UL << 2U;
+    }
+
+    constexpr void init_kings() {
+        // Whites king
+        this->pieces[4] |= 1UL << (7U * 8 + 3);
+
+        // Blacks king
+        this->pieces[10] |= 1UL << 3U;
+    }
+
+    constexpr void init_queens() {
+        // Whites queen
+        this->pieces[5] |= 1UL << (7U * 8 + 4);
+
+        // Blacks queen
+        this->pieces[11] |= 1UL << 4U;
+    }
 
     [[nodiscard]] bool move_is_legal(const chess_move &move) const;
     [[nodiscard]] bool move_is_legal_for_pawn(const chess_move &move) const;
