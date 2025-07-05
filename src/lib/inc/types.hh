@@ -3,11 +3,9 @@
 #include <cassert>
 #include <cstdint>
 #include <format>
+#include <utility>
 
 namespace ch::types {
-
-// a..h, 1..8 coordinate representing a human readable coordinate into an 8x8 chess board
-using square = std::pair<char, uint8_t>;
 
 enum class player_t : uint8_t {
     WHITE,
@@ -31,7 +29,11 @@ enum class piece_t : uint8_t {
 
 enum class empty_t : uint8_t { EMPTY };
 
-enum class diagonal_movement_t : uint8_t { UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT };
+// a..h, 1..8 coordinate representing a human readable coordinate into an 8x8 chess board
+using square = std::pair<char, uint8_t>;
+
+// Give more context for what piece is at a given square
+using piece_position = std::pair<piece_t, uint64_t>;
 
 } // namespace ch::types
 

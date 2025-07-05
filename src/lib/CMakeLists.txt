@@ -1,5 +1,6 @@
 set(SOURCES
     board.cc
+    input.cc
 )
 
 add_library(${LIB_PROJECT} ${SOURCES})
