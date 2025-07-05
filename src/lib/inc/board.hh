@@ -121,7 +121,7 @@ template <> struct std::formatter<ch::board> {
                 }
 
                 // Don't print trailing whitespace
-                if (file != ch::board::NUM_COLS) {
+                if (file != ch::board::NUM_COLS - 1) {
                     out << ' ';
                 }
             }

@@ -6,14 +6,16 @@
 #include <string_view>
 
 // NOTE: This string contains whitespaces for each empty line as well
-static constexpr std::string_view starting_presentation = R"(r n b k q b n r
-p p p p p p p p
-               
-               
-               
-               
-P P P P P P P P
-R N B K Q B N R
+static constexpr std::string_view starting_presentation = R"(8 | r n b q k b n r
+7 | p p p p p p p p
+6 |                
+5 |                
+4 |                
+3 |                
+2 | P P P P P P P P
+1 | R N B Q K B N R
+  +----------------
+    a b c d e f g h
 )";
 
 TEST_CASE("Test default chess board setup") {

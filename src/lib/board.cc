@@ -41,6 +41,12 @@ void board::apply(const move &move) {
     auto &piece_bits = this->pieces.at(piece_index);
     piece_bits ^= move.source; // Remove from source
     piece_bits |= move.dest;   // Add to destination
+
+    // Remove any captured piece at the movements destination
+    // The legality of this capture should be verified by the move_is_legal_for_x functions
+    for (const auto &[i, piece] : std::views::enumerate(this->pieces)) {
+        piece ^= move.dest;
+    }
 }
 
 bool board::piece_is_ours(types::piece_t piece_type, types::player_t player_type) const {
@@ -93,7 +99,11 @@ bool board::move_is_legal(const move &move) const {
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 
 bool board::move_is_legal_for_pawn(const move &move, int8_t direction) const {
-    auto dest_is_occupied = std::holds_alternative<types::piece_t>(this->find_piece(move.dest));
+    auto at_dest = this->find_piece(move.dest);
+    auto dest_is_occupied = std::holds_alternative<types::piece_t>(at_dest);
+
+    // TODO(gremble0): Currently pawns can always move 2 squares. Should only be allowed on first move (when the pawns
+    // source is at its start square)
 
     // Forward moves (1 or 2 squares)
     if ((move.dest == move::get_dest(move.source, 0, direction) ||
@@ -103,9 +113,10 @@ bool board::move_is_legal_for_pawn(const move &move, int8_t direction) const {
     }
 
     // Diagonal captures
-    if ((move.dest == move::get_dest(move.source, -1, direction) ||
-         move.dest == move::get_dest(move.source, 1, direction)) &&
-        dest_is_occupied) {
+    if (((move.dest == move::get_dest(move.source, -1, direction) ||
+          move.dest == move::get_dest(move.source, 1, direction)) &&
+         dest_is_occupied) &&
+        !this->piece_is_ours(std::get<types::piece_t>(at_dest), move.player)) {
         return true;
     }
 
