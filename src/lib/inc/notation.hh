@@ -13,7 +13,16 @@ static constexpr uint64_t from_notation(char file, uint8_t rank) {
     const uint8_t rank_index = rank - 1;
     const uint8_t bit_position = rank_index * 8 + file_index;
 
-    return 1ULL << bit_position;
+    return 1UL << bit_position;
+}
+
+static constexpr uint64_t from_notation(uint8_t rank) {
+    assert(rank >= 1 && rank <= 8 && "Rank must be between 1 and 8");
+
+    const uint8_t rank_index = rank - 1;
+    const uint8_t bit_position = rank_index * 8;
+
+    return 0xFFUL << bit_position;
 }
 
 } // namespace ch::notation

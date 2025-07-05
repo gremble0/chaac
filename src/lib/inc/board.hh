@@ -24,10 +24,10 @@ class board {
   private:
     constexpr void init_pawns() {
         // Whites pawns
-        this->pieces[0] |= 0xffUL << (6U * 8);
+        this->pieces[0] |= notation::from_notation(2);
 
         // Blacks pawns
-        this->pieces[6] |= 0xffUL << 8U;
+        this->pieces[6] |= notation::from_notation(7);
     }
 
     constexpr void init_rooks() {
@@ -109,9 +109,9 @@ template <> struct std::formatter<ch::board> {
 
     auto format(const ch::board &p, std::format_context &ctx) const {
         std::stringstream out;
-        for (size_t i = 0; i < ch::board::NUM_ROWS; ++i) {
-            for (size_t j = 0; j < ch::board::NUM_COLS; ++j) {
-                auto piece = p.find_piece(1UL << (i * 8 + j));
+        for (uint8_t rank = 0; rank < ch::board::NUM_ROWS; ++rank) {
+            for (uint8_t file = 0; file < ch::board::NUM_COLS; ++file) {
+                auto piece = p.find_piece(1UL << (rank * 8U + file));
                 if (std::holds_alternative<ch::types::piece_t>(piece)) {
                     out << std::format("{}", std::get<ch::types::piece_t>(piece));
                 } else {
@@ -119,7 +119,7 @@ template <> struct std::formatter<ch::board> {
                 }
 
                 // Don't print trailing whitespace
-                if (j != ch::board::NUM_COLS - 1) {
+                if (file != ch::board::NUM_COLS - 1) {
                     out << ' ';
                 }
             }

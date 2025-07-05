@@ -1,5 +1,6 @@
-#include "notation.hh"
 #include <catch2/catch_test_macros.hpp>
+
+#include "notation.hh"
 
 TEST_CASE("Test converting some human readable chess positions to our internal representation") {
     SECTION("Check corners") {
@@ -24,5 +25,19 @@ TEST_CASE("Test converting some human readable chess positions to our internal r
         constexpr auto b3 = ch::notation::from_notation('b', 3);
         // second bit in third byte
         REQUIRE(b3 == 0b10'00000000'00000000);
+
+        constexpr auto d7 = ch::notation::from_notation('d', 7);
+        // fourth bit in seventh byte
+        REQUIRE(d7 == 0b1000'00000000'00000000'00000000'00000000'00000000'00000000);
+    }
+
+    SECTION("Overload for getting whole ranks") {
+        constexpr auto third_rank = ch::notation::from_notation(3);
+        // all bits in third byte
+        REQUIRE(third_rank == 0b11111111'00000000'00000000);
+
+        constexpr auto eighth_rank = ch::notation::from_notation(8);
+        // ll bits in eighth byte
+        REQUIRE(eighth_rank == 0b11111111'00000000'00000000'00000000'00000000'00000000'00000000'00000000);
     }
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <cstdint>
 #include <format>
 
@@ -37,32 +38,32 @@ template <> struct std::formatter<ch::types::piece_t> {
     auto format(const ch::types::piece_t &p, std::format_context &ctx) const {
         switch (p) {
         case ch::types::piece_t::WHITE_PAWN:
-            return std::format_to(ctx.out(), "p");
+            return std::format_to(ctx.out(), "P");
         case ch::types::piece_t::WHITE_ROOK:
-            return std::format_to(ctx.out(), "r");
+            return std::format_to(ctx.out(), "R");
         case ch::types::piece_t::WHITE_KNIGHT:
-            return std::format_to(ctx.out(), "n");
+            return std::format_to(ctx.out(), "N");
         case ch::types::piece_t::WHITE_BISHOP:
-            return std::format_to(ctx.out(), "b");
+            return std::format_to(ctx.out(), "B");
         case ch::types::piece_t::WHITE_KING:
-            return std::format_to(ctx.out(), "k");
+            return std::format_to(ctx.out(), "K");
         case ch::types::piece_t::WHITE_QUEEN:
-            return std::format_to(ctx.out(), "q");
+            return std::format_to(ctx.out(), "Q");
 
         case ch::types::piece_t::BLACK_PAWN:
-            return std::format_to(ctx.out(), "P");
+            return std::format_to(ctx.out(), "p");
         case ch::types::piece_t::BLACK_ROOK:
-            return std::format_to(ctx.out(), "R");
+            return std::format_to(ctx.out(), "r");
         case ch::types::piece_t::BLACK_KNIGHT:
-            return std::format_to(ctx.out(), "N");
+            return std::format_to(ctx.out(), "n");
         case ch::types::piece_t::BLACK_BISHOP:
-            return std::format_to(ctx.out(), "B");
+            return std::format_to(ctx.out(), "b");
         case ch::types::piece_t::BLACK_KING:
-            return std::format_to(ctx.out(), "K");
+            return std::format_to(ctx.out(), "k");
         case ch::types::piece_t::BLACK_QUEEN:
-            return std::format_to(ctx.out(), "Q");
+            return std::format_to(ctx.out(), "q");
         }
 
-        return std::format_to(ctx.out(), "<unknown piece type>");
+        assert(false && "Unknown piece type");
     }
 };
