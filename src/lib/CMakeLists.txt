@@ -1,5 +1,5 @@
 set(SOURCES
-    chess_board.cc
+    board.cc
 )
 
 add_library(${LIB_PROJECT} ${SOURCES})

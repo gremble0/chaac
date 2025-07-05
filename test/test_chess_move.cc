@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "chess_board.hh"
+#include "board.hh"
 
 static constexpr std::string_view a2_to_a3 = R"(R N B K Q B N R
 P P P P P P P P

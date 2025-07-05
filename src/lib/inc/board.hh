@@ -1,6 +1,6 @@
 #pragma once
 
-#include "chess_move.hh"
+#include "move.hh"
 #include "types.hh"
 
 #include <array>
@@ -13,12 +13,12 @@
 
 namespace ch {
 
-class chess_board {
+class board {
   public:
-    friend class std::formatter<chess_board>;
-    chess_board();
+    friend class std::formatter<board>;
+    board();
 
-    void apply(const chess_move &move);
+    void apply(const move &move);
 
   private:
     constexpr void init_pawns() {
@@ -76,13 +76,13 @@ class chess_board {
         this->pieces[11] |= 1UL << 4U;
     }
 
-    [[nodiscard]] bool move_is_legal(const chess_move &move) const;
-    [[nodiscard]] bool move_is_legal_for_pawn(const chess_move &move) const;
-    [[nodiscard]] bool move_is_legal_for_rook(const chess_move &move) const;
-    [[nodiscard]] bool move_is_legal_for_knight(const chess_move &move) const;
-    [[nodiscard]] bool move_is_legal_for_bishop(const chess_move &move) const;
-    [[nodiscard]] bool move_is_legal_for_king(const chess_move &move) const;
-    [[nodiscard]] bool move_is_legal_for_queen(const chess_move &move) const;
+    [[nodiscard]] bool move_is_legal(const move &move) const;
+    [[nodiscard]] bool move_is_legal_for_pawn(const move &move) const;
+    [[nodiscard]] bool move_is_legal_for_rook(const move &move) const;
+    [[nodiscard]] bool move_is_legal_for_knight(const move &move) const;
+    [[nodiscard]] bool move_is_legal_for_bishop(const move &move) const;
+    [[nodiscard]] bool move_is_legal_for_king(const move &move) const;
+    [[nodiscard]] bool move_is_legal_for_queen(const move &move) const;
 
     [[nodiscard]] bool piece_is_ours(types::piece_t piece_type, types::player_t player_type) const;
 
@@ -102,13 +102,13 @@ class chess_board {
 
 } // namespace ch
 
-template <> struct std::formatter<ch::chess_board> {
+template <> struct std::formatter<ch::board> {
     constexpr auto parse(std::format_parse_context &ctx) { return ctx.begin(); }
 
-    auto format(const ch::chess_board &p, std::format_context &ctx) const {
+    auto format(const ch::board &p, std::format_context &ctx) const {
         std::stringstream out;
-        for (size_t i = 0; i < ch::chess_board::NUM_ROWS; ++i) {
-            for (size_t j = 0; j < ch::chess_board::NUM_COLS; ++j) {
+        for (size_t i = 0; i < ch::board::NUM_ROWS; ++i) {
+            for (size_t j = 0; j < ch::board::NUM_COLS; ++j) {
                 auto piece = p.find_piece(1UL << (i * 8 + j));
                 if (std::holds_alternative<ch::types::piece_t>(piece)) {
                     out << std::format("{}", std::get<ch::types::piece_t>(piece));
@@ -117,7 +117,7 @@ template <> struct std::formatter<ch::chess_board> {
                 }
 
                 // Don't print trailing whitespace
-                if (j != ch::chess_board::NUM_COLS - 1) {
+                if (j != ch::board::NUM_COLS - 1) {
                     out << ' ';
                 }
             }

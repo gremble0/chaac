@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include <chess_board.hh>
+#include <board.hh>
 #include <format>
 #include <string>
 #include <string_view>
@@ -17,7 +17,7 @@ r n b k q b n r
 )";
 
 TEST_CASE("Test default chess board setup") {
-    ch::chess_board board;
+    ch::board board;
     std::string board_presentation = std::format("{}", board);
     REQUIRE(starting_presentation == board_presentation);
 }

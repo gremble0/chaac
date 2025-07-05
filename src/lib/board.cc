@@ -1,4 +1,4 @@
-#include "chess_board.hh"
+#include "board.hh"
 #include "errors.hh"
 #include "types.hh"
 
@@ -11,7 +11,7 @@
 
 namespace ch {
 
-chess_board::chess_board() : pieces() {
+board::board() : pieces() {
     this->init_pawns();
     this->init_rooks();
     this->init_knights();
@@ -20,7 +20,7 @@ chess_board::chess_board() : pieces() {
     this->init_queens();
 }
 
-void chess_board::apply(const chess_move &move) {
+void board::apply(const move &move) {
     auto piece = this->find_piece(move.source);
     if (std::holds_alternative<types::empty_t>(piece)) {
         errors::fatal("No piece at given square");
@@ -43,7 +43,7 @@ void chess_board::apply(const chess_move &move) {
     piece_bits |= move.dest;   // Add to destination
 }
 
-bool chess_board::piece_is_ours(types::piece_t piece_type, types::player_t player_type) const {
+bool board::piece_is_ours(types::piece_t piece_type, types::player_t player_type) const {
     auto piece_type_i = static_cast<uint8_t>(piece_type);
     assert(piece_type_i < NUM_PIECES);
 
@@ -58,7 +58,7 @@ bool chess_board::piece_is_ours(types::piece_t piece_type, types::player_t playe
     return false;
 }
 
-bool chess_board::move_is_legal(const chess_move &move) const {
+bool board::move_is_legal(const move &move) const {
     switch (move.piece) {
     case types::piece_t::WHITE_PAWN:
     case types::piece_t::BLACK_PAWN:
@@ -91,7 +91,7 @@ bool chess_board::move_is_legal(const chess_move &move) const {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 
-bool chess_board::move_is_legal_for_pawn(const chess_move &move) const {
+bool board::move_is_legal_for_pawn(const move &move) const {
     auto dest_is_occupied = std::holds_alternative<types::piece_t>(this->find_piece(move.dest));
 
     // Determine direction: white pawns move up (+1), black pawns move down (-1)
@@ -106,15 +106,15 @@ bool chess_board::move_is_legal_for_pawn(const chess_move &move) const {
     }
 
     // Forward moves (1 or 2 squares)
-    if ((move.dest == chess_move::move(move.source, 0, direction) ||
-         move.dest == chess_move::move(move.source, 0, static_cast<int8_t>(direction * 2))) &&
+    if ((move.dest == move::get_dest(move.source, 0, direction) ||
+         move.dest == move::get_dest(move.source, 0, static_cast<int8_t>(direction * 2))) &&
         !dest_is_occupied) {
         return true;
     }
 
     // Diagonal captures
-    if ((move.dest == chess_move::move(move.source, -1, direction) ||
-         move.dest == chess_move::move(move.source, 1, direction)) &&
+    if ((move.dest == move::get_dest(move.source, -1, direction) ||
+         move.dest == move::get_dest(move.source, 1, direction)) &&
         dest_is_occupied) {
         return true;
     }
@@ -124,7 +124,7 @@ bool chess_board::move_is_legal_for_pawn(const chess_move &move) const {
     return false;
 }
 
-bool chess_board::move_is_legal_for_rook(const chess_move &move) const {
+bool board::move_is_legal_for_rook(const move &move) const {
     // Rooks can move/capture as many squares as it wants vertically if there are no pieces in its
     // path
 
@@ -134,7 +134,7 @@ bool chess_board::move_is_legal_for_rook(const chess_move &move) const {
     return true;
 }
 
-bool chess_board::move_is_legal_for_knight(const chess_move &move) const {
+bool board::move_is_legal_for_knight(const move &move) const {
     // Knights can move/capture 2 squares forward and then 1 to the right
 
     // Knights can move/capture 2 squares forward and then 1 to the left
@@ -154,7 +154,7 @@ bool chess_board::move_is_legal_for_knight(const chess_move &move) const {
     return true;
 }
 
-bool chess_board::move_is_legal_for_bishop(const chess_move &move) const {
+bool board::move_is_legal_for_bishop(const move &move) const {
     // Bishops can move/capture as many squares as it wants diagonally from bottom+left to top+right
     // if there are no pieces in its path (/)
 
@@ -164,7 +164,7 @@ bool chess_board::move_is_legal_for_bishop(const chess_move &move) const {
     return true;
 }
 
-bool chess_board::move_is_legal_for_king(const chess_move &move) const {
+bool board::move_is_legal_for_king(const move &move) const {
     // Kings can move/capture 1 square vertically
 
     // Kings can move/capture 1 square horizontally
@@ -176,7 +176,7 @@ bool chess_board::move_is_legal_for_king(const chess_move &move) const {
     return true;
 }
 
-bool chess_board::move_is_legal_for_queen(const chess_move &move) const {
+bool board::move_is_legal_for_queen(const move &move) const {
     // Queens can move/capture as many squares as it wants vertically if there are no pieces in its
     // path
 
@@ -194,7 +194,7 @@ bool chess_board::move_is_legal_for_queen(const chess_move &move) const {
 
 #pragma GCC diagnostic pop
 
-std::variant<types::piece_t, types::empty_t> chess_board::find_piece(uint64_t square) const {
+std::variant<types::piece_t, types::empty_t> board::find_piece(uint64_t square) const {
     for (const auto &[i, piece] : std::views::enumerate(this->pieces)) {
         if (piece & square) {
             return types::piece_t(i);
