@@ -37,6 +37,22 @@ using piece_position = std::pair<piece_t, uint64_t>;
 
 } // namespace ch::types
 
+template <> struct std::formatter<ch::types::player_t> {
+    constexpr auto parse(std::format_parse_context &ctx) { return ctx.begin(); }
+
+    auto format(const ch::types::player_t &p, std::format_context &ctx) const {
+        switch (p) {
+        case ch::types::player_t::WHITE:
+            return std::format_to(ctx.out(), "White");
+
+        case ch::types::player_t::BLACK:
+            return std::format_to(ctx.out(), "Black");
+        }
+
+        assert(false && "Unknown player type");
+    }
+};
+
 template <> struct std::formatter<ch::types::piece_t> {
     constexpr auto parse(std::format_parse_context &ctx) { return ctx.begin(); }
 

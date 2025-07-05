@@ -20,6 +20,7 @@ class board {
     board();
 
     void apply(const move &move);
+    [[nodiscard]] std::variant<types::piece_t, types::empty_t> find_piece(uint64_t square) const;
 
   private:
     constexpr void init_pawns() {
@@ -87,8 +88,6 @@ class board {
     [[nodiscard]] bool move_is_legal_for_queen(const move &move) const;
 
     [[nodiscard]] bool piece_is_ours(types::piece_t piece_type, types::player_t player_type) const;
-
-    [[nodiscard]] std::variant<types::piece_t, types::empty_t> find_piece(uint64_t square) const;
 
     static constexpr size_t NUM_PIECES = 12;
     static constexpr size_t NUM_ROWS = 8;
